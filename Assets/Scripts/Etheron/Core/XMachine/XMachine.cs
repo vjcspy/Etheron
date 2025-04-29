@@ -136,7 +136,7 @@ namespace Etheron.Core.XMachine
     {
         private readonly Dictionary<Type, object> _components = new Dictionary<Type, object>();
         private readonly XCompSystemArray _xCompSystems = new XCompSystemArray();
-        public XMachine xMachine { get; private set; }
+        public XMachine xMachine { get; private set; } = new XMachine();
 
         #region Component Storage
 
@@ -254,7 +254,7 @@ namespace Etheron.Core.XMachine
 
         protected virtual void Awake()
         {
-            xMachine = new XMachine().RegisterMachineStates(machineStates: GetXMachineStates());
+            xMachine = xMachine.RegisterMachineStates(machineStates: GetXMachineStates());
         }
 
         // protected abstract void Authoring();
