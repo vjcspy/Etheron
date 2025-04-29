@@ -10,7 +10,11 @@ namespace Etheron.Gameplay.Character.Player.Common.Components
     public struct GroundDetectionCompData
     {
         public GroundDetectionCheckType checkType;
-        public bool isGrounded;
+        public float checkDistance;
+        public float sphereRadius;
+        public Vector3 checkOffset;
         public LayerMask groundLayer;
+
+        public bool isGrounded;
     }
 }

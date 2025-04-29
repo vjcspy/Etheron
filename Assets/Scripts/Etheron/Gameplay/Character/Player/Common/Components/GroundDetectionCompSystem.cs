@@ -26,8 +26,25 @@ namespace Etheron.Gameplay.Character.Player.Common.Components
             }
 
             GroundDetectionCompData groundDetectionCompData = _groundDetectionCompStorage.Get();
-            groundDetectionCompData.isGrounded = Physics.Raycast(origin: _xMachineEntity.transform.position, direction: Vector3.down, maxDistance: 1.0f);
+            groundDetectionCompData.isGrounded = PerformGroundCheck(groundDetectionCompData: groundDetectionCompData);
             _groundDetectionCompStorage.Set(value: groundDetectionCompData);
+        }
+
+        private bool PerformGroundCheck(GroundDetectionCompData groundDetectionCompData)
+        {
+            Vector3 origin = _xMachineEntity.transform.position + groundDetectionCompData.checkOffset;
+
+            switch (groundDetectionCompData.checkType)
+            {
+                case GroundDetectionCheckType.Raycast:
+                    return Physics.Raycast(origin: origin, direction: Vector3.down, maxDistance: groundDetectionCompData.checkDistance, layerMask: groundDetectionCompData.groundLayer);
+
+                case GroundDetectionCheckType.SphereCast:
+                    return Physics.SphereCast(origin: origin, radius: groundDetectionCompData.sphereRadius, direction: Vector3.down, hitInfo: out RaycastHit _, maxDistance: groundDetectionCompData.checkDistance, layerMask: groundDetectionCompData.groundLayer);
+
+                default:
+                    return false;
+            }
         }
 
         public override void Stop()

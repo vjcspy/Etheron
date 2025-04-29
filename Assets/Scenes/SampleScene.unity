@@ -693,6 +693,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 989ee18dd88e4595a41ddaa166dcc0af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1434755596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1434755588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b321cc22aed48ffae81c53d056971f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  checkType: 1
+  checkDistance: 0.7
+  sphereRadius: 0.1
+  checkOffset: {x: 0, y: 0.03, z: 0}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &1661674783
 GameObject:
   m_ObjectHideFlags: 0
@@ -705,8 +724,8 @@ GameObject:
   - component: {fileID: 1661674786}
   - component: {fileID: 1661674785}
   - component: {fileID: 1661674784}
-  m_Layer: 0
-  m_Name: Plan
+  m_Layer: 6
+  m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1627,6 +1646,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8481140593466036460, guid: ace7d8d212358e74080d73ac95198c38, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1434755595}
+    - targetCorrespondingSourceObject: {fileID: 8481140593466036460, guid: ace7d8d212358e74080d73ac95198c38, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1434755596}
   m_SourcePrefab: {fileID: 100100000, guid: ace7d8d212358e74080d73ac95198c38, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
