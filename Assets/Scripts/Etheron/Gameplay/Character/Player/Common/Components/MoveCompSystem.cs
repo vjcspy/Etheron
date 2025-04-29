@@ -33,7 +33,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components
 
             if (Mathf.Abs(f: movementInput.x) < 0.01f)
             {
-                _xMachineEntity.xMachine.Transition(PlayerState.Idle);
+                _xMachineEntity.xMachine.Transition((int)PlayerState.Idle);
                 return;
             }
             MoveCompData move = _moveCompStorage.Get();

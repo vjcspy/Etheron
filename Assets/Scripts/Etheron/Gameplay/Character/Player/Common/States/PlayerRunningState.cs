@@ -5,7 +5,7 @@ namespace Etheron.Gameplay.Character.Player.Common.States
 {
     public class PlayerRunningState : XMachineState
     {
-        public PlayerRunningState(Enum id, XMachineEntity xMachineEntity) : base(id: id, xMachineEntity: xMachineEntity)
+        public PlayerRunningState(int id, XMachineEntity xMachineEntity) : base(id: id, xMachineEntity: xMachineEntity)
         {
         }
 

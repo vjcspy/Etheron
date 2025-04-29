@@ -2,7 +2,7 @@
 {
     public enum PlayerState
     {
-        Idle,
+        Idle = 0,
         Running,
     }
 }

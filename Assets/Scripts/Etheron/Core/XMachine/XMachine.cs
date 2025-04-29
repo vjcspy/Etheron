@@ -1,4 +1,5 @@
 ﻿using Etheron.Core.Component;
+using Etheron.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +9,12 @@ namespace Etheron.Core.XMachine
     public class XMachineState
     {
         protected readonly XMachineEntity _xMachineEntity;
-        public XMachineState(Enum id, XMachineEntity xMachineEntity)
+        protected XMachineState(int id, XMachineEntity xMachineEntity)
         {
             _xMachineEntity = xMachineEntity;
             this.id = id;
         }
-        public Enum id { get; }
+        public int id { get; }
 
         internal virtual bool Guard()
         {
@@ -26,8 +27,8 @@ namespace Etheron.Core.XMachine
 
     public class XMachine
     {
-        private Enum _currentStateId;
-        private Dictionary<Enum, XMachineState> _states;
+        private int _currentStateId;
+        private Dictionary<int, XMachineState> _states;
         public XMachine RegisterMachineStates(XMachineState[] machineStates)
         {
             _states = machineStates.ToDictionary(keySelector: state => state.id);
@@ -37,17 +38,17 @@ namespace Etheron.Core.XMachine
 
         public XMachine Start(Enum initialStateId = null)
         {
-            initialStateId ??= _states.First().Value.id;
+            int id = initialStateId == null ? _states.First().Value.id : EnumUtility.ToIntFast(enumValue: initialStateId);
 
-            _currentStateId = initialStateId;
+            _currentStateId = id;
             GetCurrentState().Entry();
 
             return this;
         }
 
-        public XMachine Transition(Enum toStateId)
+        public XMachine Transition(int toStateId)
         {
-            if (Equals(objA: toStateId, objB: _currentStateId))
+            if (_currentStateId == toStateId)
             {
                 // TODO: Currently, we don't allow self transition, so only need to check if the state is different
                 return this;

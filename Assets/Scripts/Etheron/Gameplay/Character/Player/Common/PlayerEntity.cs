@@ -12,8 +12,8 @@ namespace Etheron.Gameplay.Character.Player.Common
         {
             return new XMachineState[]
             {
-                new PlayerIdleState(id: PlayerState.Idle, xMachineEntity: this),
-                new PlayerRunningState(id: PlayerState.Running, xMachineEntity: this)
+                new PlayerIdleState(id: (int)PlayerState.Idle, xMachineEntity: this),
+                new PlayerRunningState(id: (int)PlayerState.Running, xMachineEntity: this)
             };
         }
 

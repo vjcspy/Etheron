@@ -6,7 +6,7 @@ namespace Etheron.Gameplay.Character.Player.Common.States
     public class PlayerIdleState : XMachineState
     {
 
-        public PlayerIdleState(Enum id, XMachineEntity xMachineEntity) : base(id, xMachineEntity)
+        public PlayerIdleState(int id, XMachineEntity xMachineEntity) : base(id, xMachineEntity)
         {
         }
         internal override void Entry()
