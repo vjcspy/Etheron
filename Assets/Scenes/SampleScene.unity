@@ -712,6 +712,18 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &1434755597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1434755588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e801130695a14e89acb3b226fb4dc22f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1661674783
 GameObject:
   m_ObjectHideFlags: 0
@@ -1649,6 +1661,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8481140593466036460, guid: ace7d8d212358e74080d73ac95198c38, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1434755596}
+    - targetCorrespondingSourceObject: {fileID: 8481140593466036460, guid: ace7d8d212358e74080d73ac95198c38, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1434755597}
   m_SourcePrefab: {fileID: 100100000, guid: ace7d8d212358e74080d73ac95198c38, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

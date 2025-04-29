@@ -27,7 +27,7 @@ namespace Etheron.Core.XMachine
 
     public class XMachine
     {
-        private int _currentStateId;
+        public int currentStateId;
         private Dictionary<int, XMachineState> _states;
         public XMachine RegisterMachineStates(XMachineState[] machineStates)
         {
@@ -40,7 +40,7 @@ namespace Etheron.Core.XMachine
         {
             int id = initialStateId == null ? _states.First().Value.id : EnumUtility.ToIntFast(enumValue: initialStateId);
 
-            _currentStateId = id;
+            currentStateId = id;
             GetCurrentState().Entry();
 
             return this;
@@ -48,7 +48,7 @@ namespace Etheron.Core.XMachine
 
         public XMachine Transition(int toStateId)
         {
-            if (_currentStateId == toStateId)
+            if (currentStateId == toStateId)
             {
                 // TODO: Currently, we don't allow self transition, so only need to check if the state is different
                 return this;
@@ -59,14 +59,15 @@ namespace Etheron.Core.XMachine
             }
 
             GetCurrentState().Exit();
-            _states[key: toStateId].Entry();
+            currentStateId = toStateId;
+            _states[key: currentStateId].Entry();
 
             return this;
         }
 
         public XMachineState GetCurrentState()
         {
-            return _states[key: _currentStateId];
+            return _states[key: currentStateId];
         }
     }
 
@@ -167,6 +168,11 @@ namespace Etheron.Core.XMachine
             return (XCompStorage<T>)storageObj;
         }
 
+        public XCompStorage<T> GetXStorage<T>() where T : struct
+        {
+            return GetOrCreateXStorage<T>();
+        }
+
         public bool HasXComponent<T>() where T : struct
         {
             Type type = typeof(T);
@@ -183,6 +189,14 @@ namespace Etheron.Core.XMachine
             if (_components.TryGetValue(key: type, value: out object storageObj))
             {
                 ((XCompStorage<T>)storageObj).Disable();
+            }
+        }
+        public void EnableXComponent<T>() where T : struct
+        {
+            Type type = typeof(T);
+            if (_components.TryGetValue(key: type, value: out object storageObj))
+            {
+                ((XCompStorage<T>)storageObj).Enable();
             }
         }
 

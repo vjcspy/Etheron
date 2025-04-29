@@ -45,6 +45,9 @@ namespace Etheron.Gameplay.Character.Player.Common.Components
             Vector3 velocity = new Vector3(x: movementInput.x * moveSpeed, y: _rb.linearVelocity.y, z: 0f);
 
             _rb.linearVelocity = velocity;
+
+            // Safe to transition because each state has its own guard
+            _xMachineEntity.xMachine.Transition((int)PlayerState.Running);
         }
 
         public override void Stop()

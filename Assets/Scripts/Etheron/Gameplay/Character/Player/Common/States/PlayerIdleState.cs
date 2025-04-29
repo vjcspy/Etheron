@@ -9,10 +9,5 @@ namespace Etheron.Gameplay.Character.Player.Common.States
         public PlayerIdleState(int id, XMachineEntity xMachineEntity) : base(id, xMachineEntity)
         {
         }
-        internal override void Entry()
-        {
-            _xMachineEntity.AddXComponent(new InputCompData());
-            _xMachineEntity.AddXComponent(new MoveCompData());
-        }
     }
 }
