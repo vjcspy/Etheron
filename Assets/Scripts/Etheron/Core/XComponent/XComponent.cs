@@ -1,4 +1,5 @@
 ﻿using Etheron.Core.XMachine;
+using UnityEngine;
 namespace Etheron.Core.Component
 {
     public class XCompStorage<T> where T : struct
@@ -42,8 +43,6 @@ namespace Etheron.Core.Component
         {
             return _hasValue;
         }
-
-
     }
 
     public abstract class XCompSystem
@@ -56,5 +55,25 @@ namespace Etheron.Core.Component
         public abstract void Start();
         public abstract void Update();
         public abstract void Stop();
+    }
+
+    [RequireComponent(typeof(XMachineEntity))]
+    public abstract class XCompAuthoring : MonoBehaviour
+    {
+        // private XMachineEntity xMachineEntity;
+        private void Awake()
+        {
+            XMachineEntity xMachineEntity = GetComponent<XMachineEntity>();
+            if (xMachineEntity == null)
+            {
+                Debug.LogError(message: "XCompAuthoring must be attached to a GameObject with an XMachineEntity component.");
+                return;
+            }
+
+            // Add the component to the XMachineEntity
+            Authoring(xMachineEntity: xMachineEntity);
+        }
+
+        protected abstract void Authoring(XMachineEntity xMachineEntity);
     }
 }

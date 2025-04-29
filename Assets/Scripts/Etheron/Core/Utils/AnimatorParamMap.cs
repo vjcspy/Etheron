@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-namespace ND25.Core.Utils
+namespace Etheron.Core.Utils
 {
     /// <summary>
     ///     Lớp cơ sở ánh xạ từ enum sang Animator parameter hash.

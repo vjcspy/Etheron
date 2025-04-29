@@ -3,19 +3,6 @@ using Etheron.Core.XMachine;
 using UnityEngine;
 namespace Etheron.Gameplay.Character.Player.Common.Components
 {
-    public enum MoveType
-    {
-        Walk,
-        Run
-    }
-
-    public struct MoveCompData
-    {
-        public MoveType moveType;
-        public float runSpeed;
-        public float walkSpeed;
-    }
-
     public class MoveCompSystem : XCompSystem
     {
         private XCompStorage<InputCompData> _inputCompStorage;
@@ -29,7 +16,6 @@ namespace Etheron.Gameplay.Character.Player.Common.Components
         public override void Start()
         {
             _moveCompStorage = _xMachineEntity.GetOrCreateXStorage<MoveCompData>();
-
             _inputCompStorage = _xMachineEntity.GetOrCreateXStorage<InputCompData>();
 
             _rb = _xMachineEntity.GetComponent<Rigidbody>();
@@ -47,11 +33,8 @@ namespace Etheron.Gameplay.Character.Player.Common.Components
 
             if (Mathf.Abs(f: movementInput.x) < 0.01f)
             {
-                // Không có input theo chiều ngang => giữ nguyên tốc độ rơi
-                // _rb.linearVelocity = new Vector3(x: 0f, y: _rb.linearVelocity.y, z: 0f);
                 return;
             }
-
             MoveCompData move = _moveCompStorage.Get();
 
             // Chọn speed

@@ -4,11 +4,6 @@ using Etheron.Input;
 using UnityEngine;
 namespace Etheron.Gameplay.Character.Player.Common.Components
 {
-    public struct InputCompData
-    {
-        public Vector2 movementInput;
-    }
-
     public class InputCompSystem : XCompSystem
     {
         private XCompStorage<InputCompData> _inputCompStorage;

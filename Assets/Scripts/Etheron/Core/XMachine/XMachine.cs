@@ -68,13 +68,213 @@ namespace Etheron.Core.XMachine
             return _states[key: _currentStateId];
         }
     }
+    // public abstract class XMachineEntity : MonoBehaviour
+    // {
+    //     private readonly Dictionary<Type, object> _components = new Dictionary<Type, object>();
+    //     private XCompSystem[] _cachedCompSystems;
+    //     public XMachine xMachine { get; private set; }
+    //
+    //     // Add component lần đầu tiên
+    //     public void AddXComponent<T>(T component) where T : struct
+    //     {
+    //         Type type = typeof(T);
+    //         if (!_components.TryGetValue(key: type, value: out object storageObj))
+    //         {
+    //             var newStorage = new XCompStorage<T>(value: component);
+    //             newStorage.Enable();
+    //             _components[key: type] = newStorage;
+    //         }
+    //         else
+    //         {
+    //             ((XCompStorage<T>)storageObj).Enable();
+    //         }
+    //     }
+    //
+    //     // Set/update component. Should use from cached storage
+    //     // public void SetXComponent<T>(T component) where T : struct
+    //     // {
+    //     //     Type type = typeof(T);
+    //     //     if (_components.TryGetValue(key: type, value: out object storageObj))
+    //     //     {
+    //     //         ((XCompStorage<T>)storageObj).Set(value: component);
+    //     //     }
+    //     //     else
+    //     //     {
+    //     //         _components[key: type] = new XCompStorage<T>(value: component);
+    //     //     }
+    //     // }
+    //
+    //     // Try get component data. Should use from cached storage
+    //     // public bool TryGetXComponent<T>(out T component) where T : struct
+    //     // {
+    //     //     Type type = typeof(T);
+    //     //     if (_components.TryGetValue(key: type, value: out object storageObj))
+    //     //     {
+    //     //         var storage = (XCompStorage<T>)storageObj;
+    //     //         if (storage.IsEnable())
+    //     //         {
+    //     //             component = storage.Get();
+    //     //             return true;
+    //     //         }
+    //     //     }
+    //     //
+    //     //     component = default(T);
+    //     //     return false;
+    //     // }
+    //
+    //     // Get ref trực tiếp tới Storage
+    //     public XCompStorage<T> GetOrCreateXStorage<T>() where T : struct
+    //     {
+    //         Type type = typeof(T);
+    //         if (!_components.TryGetValue(key: type, value: out object storageObj))
+    //         {
+    //             var newStorage = new XCompStorage<T>();
+    //             _components[key: type] = newStorage;
+    //             return newStorage;
+    //         }
+    //
+    //         return (XCompStorage<T>)storageObj;
+    //     }
+    //
+    //     // Check xem có component và nó còn hợp lệ không
+    //     public bool HasXComponent<T>() where T : struct
+    //     {
+    //         Type type = typeof(T);
+    //         if (_components.TryGetValue(key: type, value: out object storageObj))
+    //         {
+    //             return ((XCompStorage<T>)storageObj).IsEnable();
+    //         }
+    //         return false;
+    //     }
+    //
+    //     // Invalidate component thay vì Remove
+    //     public void DisableXComponent<T>() where T : struct
+    //     {
+    //         Type type = typeof(T);
+    //         if (_components.TryGetValue(key: type, value: out object storageObj))
+    //         {
+    //             ((XCompStorage<T>)storageObj).Disable();
+    //         }
+    //     }
+    //
+    //     // Get toàn bộ component storage
+    //     public IEnumerable<object> GetAllXComponents()
+    //     {
+    //         return _components.Values;
+    //     }
+    //
+    //     protected abstract XCompSystem[] GetXCompSystems();
+    //     protected abstract XMachineState[] GetXMachineStates();
+    //
+    //     #region RendererCycle
+    //
+    //     protected virtual void Awake()
+    //     {
+    //         _cachedCompSystems = GetXCompSystems();
+    //         xMachine = new XMachine().RegisterMachineStates(machineStates: GetXMachineStates());
+    //         Authoring();
+    //     }
+    //
+    //     protected abstract void Authoring();
+    //
+    //     protected virtual void Start()
+    //     {
+    //         xMachine.Start(initialStateId: null);
+    //         foreach (XCompSystem t in _cachedCompSystems)
+    //         {
+    //             t.Start();
+    //         }
+    //     }
+    //
+    //     private void Update()
+    //     {
+    //         foreach (XCompSystem t in _cachedCompSystems)
+    //         {
+    //             t.Update();
+    //         }
+    //     }
+    //
+    //     private void OnDestroy()
+    //     {
+    //         foreach (XCompSystem t in _cachedCompSystems)
+    //         {
+    //             t.Stop();
+    //         }
+    //     }
+    //
+    //     #endregion
+    //
+    // }
+
+    public class XCompSystemArray
+    {
+        private XCompSystem[] _systems;
+
+        public XCompSystemArray(int initialCapacity = 8)
+        {
+            _systems = new XCompSystem[initialCapacity];
+            Count = 0;
+        }
+
+        public int Count { get; private set; }
+
+        public XCompSystem this[int index]
+        {
+            get
+            {
+                // if (index >= _count) throw new IndexOutOfRangeException();
+                return _systems[index];
+            }
+        }
+
+        public void Add(XCompSystem system)
+        {
+            if (Count == _systems.Length)
+            {
+                Resize(newSize: _systems.Length + 8);
+            }
+
+            _systems[Count++] = system;
+        }
+
+        public void Remove(XCompSystem system)
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                if (_systems[i] == system)
+                {
+                    _systems[i] = _systems[Count - 1]; // swap last vào
+                    _systems[Count - 1] = null;
+                    Count--;
+                    return;
+                }
+            }
+        }
+
+        private void Resize(int newSize)
+        {
+            var newArray = new XCompSystem[newSize];
+            Array.Copy(sourceArray: _systems, destinationArray: newArray, length: Count);
+            _systems = newArray;
+        }
+
+        public void ForEach(Action<XCompSystem> action)
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                action(obj: _systems[i]);
+            }
+        }
+    }
+
     public abstract class XMachineEntity : MonoBehaviour
     {
         private readonly Dictionary<Type, object> _components = new Dictionary<Type, object>();
-        private XCompSystem[] _cachedCompSystems;
+        private readonly XCompSystemArray _xCompSystems = new XCompSystemArray();
         public XMachine xMachine { get; private set; }
 
-        // Add component lần đầu tiên
+        #region Component Storage
+
         public void AddXComponent<T>(T component) where T : struct
         {
             Type type = typeof(T);
@@ -90,39 +290,6 @@ namespace Etheron.Core.XMachine
             }
         }
 
-        // Set/update component. Should use from cached storage
-        // public void SetXComponent<T>(T component) where T : struct
-        // {
-        //     Type type = typeof(T);
-        //     if (_components.TryGetValue(key: type, value: out object storageObj))
-        //     {
-        //         ((XCompStorage<T>)storageObj).Set(value: component);
-        //     }
-        //     else
-        //     {
-        //         _components[key: type] = new XCompStorage<T>(value: component);
-        //     }
-        // }
-
-        // Try get component data. Should use from cached storage
-        // public bool TryGetXComponent<T>(out T component) where T : struct
-        // {
-        //     Type type = typeof(T);
-        //     if (_components.TryGetValue(key: type, value: out object storageObj))
-        //     {
-        //         var storage = (XCompStorage<T>)storageObj;
-        //         if (storage.IsEnable())
-        //         {
-        //             component = storage.Get();
-        //             return true;
-        //         }
-        //     }
-        //
-        //     component = default(T);
-        //     return false;
-        // }
-
-        // Get ref trực tiếp tới Storage
         public XCompStorage<T> GetOrCreateXStorage<T>() where T : struct
         {
             Type type = typeof(T);
@@ -136,7 +303,6 @@ namespace Etheron.Core.XMachine
             return (XCompStorage<T>)storageObj;
         }
 
-        // Check xem có component và nó còn hợp lệ không
         public bool HasXComponent<T>() where T : struct
         {
             Type type = typeof(T);
@@ -147,7 +313,6 @@ namespace Etheron.Core.XMachine
             return false;
         }
 
-        // Invalidate component thay vì Remove
         public void DisableXComponent<T>() where T : struct
         {
             Type type = typeof(T);
@@ -157,48 +322,83 @@ namespace Etheron.Core.XMachine
             }
         }
 
-        // Get toàn bộ component storage
+        // Try get component data. Should use from cached storage
+        public bool TryGetXComponent<T>(out T component) where T : struct
+        {
+            Type type = typeof(T);
+            if (_components.TryGetValue(key: type, value: out object storageObj))
+            {
+                var storage = (XCompStorage<T>)storageObj;
+                if (storage.IsEnable())
+                {
+                    component = storage.Get();
+                    return true;
+                }
+            }
+
+            component = default(T);
+            return false;
+        }
+
+        // Set/update component. Should use from cached storage
+        public void SetXComponent<T>(T component) where T : struct
+        {
+            Type type = typeof(T);
+            if (_components.TryGetValue(key: type, value: out object storageObj))
+            {
+                ((XCompStorage<T>)storageObj).Set(value: component);
+            }
+            else
+            {
+                _components[key: type] = new XCompStorage<T>(value: component);
+            }
+        }
+
         public IEnumerable<object> GetAllXComponents()
         {
             return _components.Values;
         }
 
-        protected abstract XCompSystem[] GetXCompSystems();
+        #endregion
+
+        #region System Management
+
+        // protected abstract XCompSystem[] GetXCompSystems();
         protected abstract XMachineState[] GetXMachineStates();
 
-        #region RendererCycle
+        // Cho phép đăng ký thêm XCompSystem trong runtime
+        public void RegisterXCompSystem(XCompSystem system)
+        {
+            if (system == null) return;
+            _xCompSystems.Add(system: system);
+            system.Start();
+        }
 
         protected virtual void Awake()
         {
-            _cachedCompSystems = GetXCompSystems();
             xMachine = new XMachine().RegisterMachineStates(machineStates: GetXMachineStates());
-            Authoring();
         }
 
-        protected abstract void Authoring();
+        // protected abstract void Authoring();
 
         protected virtual void Start()
         {
             xMachine.Start(initialStateId: null);
-            foreach (XCompSystem t in _cachedCompSystems)
-            {
-                t.Start();
-            }
         }
 
         private void Update()
         {
-            foreach (XCompSystem t in _cachedCompSystems)
+            for (int i = 0; i < _xCompSystems.Count; i++)
             {
-                t.Update();
+                _xCompSystems[index: i].Update();
             }
         }
 
         private void OnDestroy()
         {
-            foreach (XCompSystem t in _cachedCompSystems)
+            for (int i = 0; i < _xCompSystems.Count; i++)
             {
-                t.Stop();
+                _xCompSystems[index: i].Stop();
             }
         }
 
