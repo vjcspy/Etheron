@@ -15,9 +15,8 @@ namespace Etheron.Input
             }
 
             Instance = this;
-            DontDestroyOnLoad(gameObject);
-
             InputActions = new InputSystem_Actions();
+            // DontDestroyOnLoad(gameObject);
         }
     }
 }
