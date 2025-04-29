@@ -1,5 +1,6 @@
 ﻿using Etheron.Core.Component;
 using Etheron.Core.XMachine;
+using Etheron.Types;
 using UnityEngine;
 namespace Etheron.Gameplay.Character.Player.Common.Components
 {
@@ -9,6 +10,8 @@ namespace Etheron.Gameplay.Character.Player.Common.Components
         private XCompStorage<MoveCompData> _moveCompStorage;
         private Rigidbody _rb;
 
+        private XCompStorage<VisualizationCompData> _visualizationCompStorage;
+
         public MoveCompSystem(XMachineEntity xMachineEntity) : base(xMachineEntity: xMachineEntity)
         {
         }
@@ -17,6 +20,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components
         {
             _moveCompStorage = _xMachineEntity.GetOrCreateXStorage<MoveCompData>();
             _inputCompStorage = _xMachineEntity.GetOrCreateXStorage<InputCompData>();
+            _visualizationCompStorage = _xMachineEntity.GetOrCreateXStorage<VisualizationCompData>();
 
             _rb = _xMachineEntity.GetComponent<Rigidbody>();
         }
@@ -29,11 +33,14 @@ namespace Etheron.Gameplay.Character.Player.Common.Components
             }
 
             InputCompData input = _inputCompStorage.Get();
+            VisualizationCompData visualization = _visualizationCompStorage.Get();
             Vector2 movementInput = input.movementInput;
 
             if (Mathf.Abs(f: movementInput.x) < 0.01f)
             {
-                _xMachineEntity.xMachine.Transition((int)PlayerState.Idle);
+                visualization.facingDirection = FacingDirection.None;
+                _visualizationCompStorage.Set(visualization);
+                _xMachineEntity.xMachine.Transition(toStateId: (int)PlayerState.Idle);
                 return;
             }
             MoveCompData move = _moveCompStorage.Get();
@@ -46,8 +53,12 @@ namespace Etheron.Gameplay.Character.Player.Common.Components
 
             _rb.linearVelocity = velocity;
 
+            // Update visualization
+            visualization.facingDirection = movementInput.x > 0f ? FacingDirection.Right : FacingDirection.Left;
+            _visualizationCompStorage.Set(visualization);
+
             // Safe to transition because each state has its own guard
-            _xMachineEntity.xMachine.Transition((int)PlayerState.Running);
+            _xMachineEntity.xMachine.Transition(toStateId: (int)PlayerState.Running);
         }
 
         public override void Stop()

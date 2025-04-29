@@ -1,5 +1,6 @@
 ﻿using Etheron.Core.Component;
 using Etheron.Core.XMachine;
+using Etheron.Types;
 using UnityEngine;
 namespace Etheron.Gameplay.Character.Player.Common.Components
 {
@@ -21,19 +22,19 @@ namespace Etheron.Gameplay.Character.Player.Common.Components
         {
             if (!_visualizationCompStorage.IsEnable()) return;
 
-            // Update the visualization component data
-            // VisualizationCompData visualizationCompData = _visualizationCompStorage.Get();
-            switch (_xMachineEntity.xMachine.currentStateId)
+            VisualizationCompData visualizationCompData = _visualizationCompStorage.Get();
+            int animationState = _xMachineEntity.xMachine.currentStateId switch
             {
-                case (int)PlayerState.Idle:
-                    _animator.SetInteger(id: AnimatorStateHash, value: 0);
-                    break;
-                case (int)PlayerState.Walking:
-                    _animator.SetInteger(id: AnimatorStateHash, value: 1);
-                    break;
-                case (int)PlayerState.Running:
-                    _animator.SetInteger(id: AnimatorStateHash, value: 2);
-                    break;
+                (int)PlayerState.Idle => 0,
+                (int)PlayerState.Walking => 1,
+                (int)PlayerState.Running => 2,
+                _ => 0
+            };
+            _animator.SetInteger(id: AnimatorStateHash, value: animationState);
+
+            if (visualizationCompData.facingDirection != FacingDirection.None)
+            {
+                _xMachineEntity.transform.rotation = Quaternion.LookRotation(forward: visualizationCompData.facingDirection.normalized, upwards: Vector3.up);
             }
         }
         public override void Stop()
