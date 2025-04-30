@@ -124,7 +124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed1a9093e77045e592ecf837414e2a55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpHeight: 2
+  jumpHeight: 3
 --- !u!114 &7143202523317009623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,8 +151,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   checkType: 1
-  checkDistance: 0.7
-  sphereRadius: 0.1
+  checkDistance: 0.56
+  sphereRadius: 0.2
   checkOffset: {x: 0, y: 0, z: 0}
   groundLayer:
     serializedVersion: 2
