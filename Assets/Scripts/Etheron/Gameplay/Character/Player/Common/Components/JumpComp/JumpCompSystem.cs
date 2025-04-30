@@ -1,5 +1,6 @@
-﻿using Etheron.Core.Component;
+﻿using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
+using Etheron.Gameplay.Character.Player.Common.Components.GroundDetectionComp;
 using Etheron.Gameplay.Character.Player.Common.Components.InputComp;
 using UnityEngine;
 namespace Etheron.Gameplay.Character.Player.Common.Components.JumpComp
@@ -30,14 +31,17 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.JumpComp
                 JumpCompData jumpCompData = _jumpCompStorage.Get();
                 GroundDetectionCompData groundDetectionCompData = _groundDetectionCompStorage.Get();
                 InputCompData inputCompData = _inputCompStorage.Get();
-                if (inputCompData.jumpPressed && groundDetectionCompData.isGrounded)
+                if (inputCompData.jumpPressed)
                 {
-                    float jumpVelocity = Mathf.Sqrt(f: 2 * _gravity.magnitude * jumpCompData.jumpHeight);
+                    if (groundDetectionCompData.isGrounded)
+                    {
+                        float jumpVelocity = Mathf.Sqrt(f: 2 * _gravity.magnitude * jumpCompData.jumpHeight);
 
-                    Vector3 currentVelocity = _rb.linearVelocity;
-                    currentVelocity.y = jumpVelocity;
+                        Vector3 currentVelocity = _rb.linearVelocity;
+                        currentVelocity.y = jumpVelocity;
 
-                    _rb.linearVelocity = currentVelocity;
+                        _rb.linearVelocity = currentVelocity;
+                    }
 
                     // Reset jumpPressed to false after applying jump
                     inputCompData.jumpPressed = false;

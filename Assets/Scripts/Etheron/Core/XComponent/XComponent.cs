@@ -1,6 +1,6 @@
 ﻿using Etheron.Core.XMachine;
 using UnityEngine;
-namespace Etheron.Core.Component
+namespace Etheron.Core.XComponent
 {
     public class XCompStorage<T> where T : struct
     {

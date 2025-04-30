@@ -1,4 +1,4 @@
-﻿namespace Etheron.Gameplay.Character.Player.Common.Components
+﻿namespace Etheron.Gameplay.Character.Player.Common.Components.MoveComp
 {
     public enum MoveType
     {

@@ -1,15 +1,20 @@
-﻿using Etheron.Core.Component;
+﻿using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
 using Etheron.Gameplay.Character.Player.Common.Components;
+using Etheron.Gameplay.Character.Player.Common.Components.GroundDetectionComp;
 namespace Etheron.Gameplay.Character.Player.Common.States
 {
     public class PlayerRunningState : XMachineState
     {
-        private readonly XCompStorage<GroundDetectionCompData> _groundDetectionCompStorage;
+        private XCompStorage<GroundDetectionCompData> _groundDetectionCompStorage;
 
         public PlayerRunningState(int id, XMachineEntity xMachineEntity) : base(id: id, xMachineEntity: xMachineEntity)
         {
-            _groundDetectionCompStorage = xMachineEntity.GetXStorage<GroundDetectionCompData>();
+        }
+
+        public override void OnCreate()
+        {
+            _groundDetectionCompStorage = _xMachineEntity.GetXStorage<GroundDetectionCompData>();
         }
 
         internal override bool Guard()

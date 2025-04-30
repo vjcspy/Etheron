@@ -1,4 +1,4 @@
-﻿using Etheron.Core.Component;
+﻿using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
 namespace Etheron.Gameplay.Character.Player.Common.Components.InputComp
 {

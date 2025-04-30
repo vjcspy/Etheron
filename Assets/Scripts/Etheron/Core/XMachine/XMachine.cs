@@ -1,4 +1,4 @@
-﻿using Etheron.Core.Component;
+﻿using Etheron.Core.XComponent;
 using Etheron.Utils;
 using System;
 using System.Collections.Generic;
@@ -16,6 +16,8 @@ namespace Etheron.Core.XMachine
         }
         public int id { get; }
 
+        public virtual void OnCreate() { }
+
         internal virtual bool Guard()
         {
             return true;
@@ -31,7 +33,12 @@ namespace Etheron.Core.XMachine
         public int currentStateId;
         public XMachine RegisterMachineStates(XMachineState[] machineStates)
         {
-            _states = machineStates.ToDictionary(keySelector: state => state.id);
+            _states = machineStates.ToDictionary(keySelector: state =>
+            {
+                state.OnCreate();
+
+                return state.id;
+            });
 
             return this;
         }
@@ -61,7 +68,6 @@ namespace Etheron.Core.XMachine
             GetCurrentState().Exit();
             currentStateId = toStateId;
             _states[key: currentStateId].Entry();
-
             return this;
         }
 

@@ -13,10 +13,10 @@ GameObject:
   - component: {fileID: 4478030350086679622}
   - component: {fileID: 3741668294321263263}
   - component: {fileID: 2394023181076079352}
-  - component: {fileID: 266919600427919642}
-  - component: {fileID: 687813556540236379}
-  - component: {fileID: 4513373854537219310}
   - component: {fileID: 4285515217316361247}
+  - component: {fileID: 7143202523317009623}
+  - component: {fileID: 6507745225949380169}
+  - component: {fileID: 7225080000595821432}
   m_Layer: 0
   m_Name: CatGirl
   m_TagString: Player
@@ -112,52 +112,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7f07b262f8441fcabc08d0b1db39559, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &266919600427919642
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8481140593466036460}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89c38a3be80449b0a4323dc44e58b067, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _runSpeed: 3
-  _walkSpeed: 2
---- !u!114 &687813556540236379
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8481140593466036460}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b321cc22aed48ffae81c53d056971f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  checkType: 1
-  checkDistance: 0.7
-  sphereRadius: 0.1
-  checkOffset: {x: 0, y: 0.03, z: 0}
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
---- !u!114 &4513373854537219310
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8481140593466036460}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e801130695a14e89acb3b226fb4dc22f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animationUpdateIntervalMs: 100
 --- !u!114 &4285515217316361247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -171,6 +125,52 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jumpHeight: 2
+--- !u!114 &7143202523317009623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8481140593466036460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d82316a0fe0d4962b5afc4de304b4574, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationUpdateIntervalMs: 100
+--- !u!114 &6507745225949380169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8481140593466036460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b4b3a2a65134a8ba04275d6911a0070, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  checkType: 1
+  checkDistance: 0.7
+  sphereRadius: 0.1
+  checkOffset: {x: 0, y: 0, z: 0}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+--- !u!114 &7225080000595821432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8481140593466036460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b606c83b9ca244be92059305ecf1b52f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _runSpeed: 5
+  _walkSpeed: 2
 --- !u!1001 &2768172370744092782
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -227,6 +227,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: df0e548ef1841b946ad9d3a813aba8a6, type: 2}
+    - target: {fileID: 5866666021909216657, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_UpdateMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 0

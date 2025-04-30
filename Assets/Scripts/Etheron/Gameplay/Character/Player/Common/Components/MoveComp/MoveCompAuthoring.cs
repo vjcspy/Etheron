@@ -1,7 +1,7 @@
-﻿using Etheron.Core.Component;
+﻿using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
 using UnityEngine;
-namespace Etheron.Gameplay.Character.Player.Common.Components
+namespace Etheron.Gameplay.Character.Player.Common.Components.MoveComp
 {
     public class MoveCompAuthoring : XCompAuthoring
     {

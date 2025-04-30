@@ -1,7 +1,7 @@
-﻿using Etheron.Core.Component;
+﻿using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
 using UnityEngine;
-namespace Etheron.Gameplay.Character.Player.Common.Components
+namespace Etheron.Gameplay.Character.Player.Common.Components.GroundDetectionComp
 {
 
 
@@ -28,6 +28,15 @@ namespace Etheron.Gameplay.Character.Player.Common.Components
             GroundDetectionCompData groundDetectionCompData = _groundDetectionCompStorage.Get();
             groundDetectionCompData.isGrounded = PerformGroundCheck(groundDetectionCompData: groundDetectionCompData);
             _groundDetectionCompStorage.Set(value: groundDetectionCompData);
+
+            if (!groundDetectionCompData.isGrounded)
+            {
+                _xMachineEntity.xMachine.Transition(toStateId: (int)PlayerState.Air);
+            }
+            else if (_xMachineEntity.xMachine.currentStateId == (int)PlayerState.Air)
+            {
+                _xMachineEntity.xMachine.Transition(toStateId: (int)PlayerState.Idle);
+            }
         }
 
         private bool PerformGroundCheck(GroundDetectionCompData groundDetectionCompData)

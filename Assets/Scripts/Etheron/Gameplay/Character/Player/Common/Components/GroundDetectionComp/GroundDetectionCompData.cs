@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-namespace Etheron.Gameplay.Character.Player.Common.Components
+namespace Etheron.Gameplay.Character.Player.Common.Components.GroundDetectionComp
 {
     public enum GroundDetectionCheckType
     {

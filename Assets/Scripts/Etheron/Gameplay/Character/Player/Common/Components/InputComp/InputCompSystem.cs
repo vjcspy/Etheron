@@ -1,11 +1,9 @@
-﻿using Etheron.Core.Component;
+﻿using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
-using Etheron.Gameplay.Character.Player.Common.Components.InputComp;
 using Etheron.Input;
-using UnityEngine;
 using System;
-
-namespace Etheron.Gameplay.Character.Player.Common.Components
+using UnityEngine;
+namespace Etheron.Gameplay.Character.Player.Common.Components.InputComp
 {
     public class InputCompSystem : XCompSystem
     {

@@ -1,8 +1,8 @@
-﻿using Etheron.Core.Component;
+﻿using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
 using System;
 using UnityEngine;
-namespace Etheron.Gameplay.Character.Player.Common.Components
+namespace Etheron.Gameplay.Character.Player.Common.Components.GroundDetectionComp
 {
     public class GroundDetectionCompAuthoring : XCompAuthoring
     {
