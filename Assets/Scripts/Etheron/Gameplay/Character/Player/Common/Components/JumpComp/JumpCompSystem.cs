@@ -42,12 +42,12 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.JumpComp
 
             if (inputCompData.jumpPressed && groundDetectionCompData.isGrounded)
             {
-                inputCompData.jumpPressed = false;
-                _inputCompStorage.Set(value: inputCompData);
-
                 ApplyJumpVelocity(jumpCompData: jumpCompData);
                 StartJumpTransitionCheckAsync().Forget();
             }
+
+            inputCompData.jumpPressed = false;
+            _inputCompStorage.Set(value: inputCompData);
         }
 
         private void ApplyJumpVelocity(JumpCompData jumpCompData)
