@@ -6,3 +6,9 @@
     width: 120px;
     height: 30px;
 }
+
+.container {
+    flex-grow: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+}

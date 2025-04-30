@@ -31,13 +31,10 @@ namespace Etheron.Colyseus
 
             try
             {
-                // 1) Gọi SignIn… trả về Task<AuthUser>
-                // 2) Chuyển thành UniTask<AuthUser>
-                // 3) Gán cancellation token của GameObject
-                IAuthData user = await client.Auth
+                await client.Auth
                     .SignInWithEmailAndPassword(email: email, password: password);
 
-                Debug.Log(message: $"[Auth] Signed in: {user.RawUser}");
+                Debug.Log(message: "[Auth] Signed in successfully");
             }
             catch (OperationCanceledException)
             {

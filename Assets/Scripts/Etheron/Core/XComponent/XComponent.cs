@@ -1,4 +1,6 @@
 ﻿using Etheron.Core.XMachine;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 namespace Etheron.Core.XComponent
 {
@@ -57,7 +59,7 @@ namespace Etheron.Core.XComponent
         public abstract void Disable();
     }
 
-    [RequireComponent(typeof(XMachineEntity))]
+    [RequireComponent(requiredComponent: typeof(XMachineEntity))]
     public abstract class XCompAuthoring : MonoBehaviour
     {
         // private XMachineEntity xMachineEntity;
@@ -75,5 +77,140 @@ namespace Etheron.Core.XComponent
         }
 
         protected abstract void Authoring(XMachineEntity xMachineEntity);
+    }
+
+    public abstract class XEntity : MonoBehaviour
+    {
+        private readonly Dictionary<Type, object> _components = new Dictionary<Type, object>();
+        private readonly XCompSystemArray _xCompSystems = new XCompSystemArray();
+        #region Component Storage
+
+        public void AddXComponent<T>(T component) where T : struct
+        {
+            Type type = typeof(T);
+            if (!_components.TryGetValue(key: type, value: out object storageObj))
+            {
+                var newStorage = new XCompStorage<T>(value: component);
+                newStorage.Enable();
+                _components[key: type] = newStorage;
+            }
+            else
+            {
+                ((XCompStorage<T>)storageObj).Enable();
+            }
+        }
+
+        public XCompStorage<T> GetOrCreateXStorage<T>() where T : struct
+        {
+            Type type = typeof(T);
+            if (!_components.TryGetValue(key: type, value: out object storageObj))
+            {
+                var newStorage = new XCompStorage<T>();
+                _components[key: type] = newStorage;
+                return newStorage;
+            }
+
+            return (XCompStorage<T>)storageObj;
+        }
+
+        public XCompStorage<T> GetXStorage<T>() where T : struct
+        {
+            return GetOrCreateXStorage<T>();
+        }
+
+        public bool HasXComponent<T>() where T : struct
+        {
+            Type type = typeof(T);
+            if (_components.TryGetValue(key: type, value: out object storageObj))
+            {
+                return ((XCompStorage<T>)storageObj).IsEnable();
+            }
+            return false;
+        }
+
+        public void DisableXComponent<T>() where T : struct
+        {
+            Type type = typeof(T);
+            if (_components.TryGetValue(key: type, value: out object storageObj))
+            {
+                ((XCompStorage<T>)storageObj).Disable();
+            }
+        }
+        public void EnableXComponent<T>() where T : struct
+        {
+            Type type = typeof(T);
+            if (_components.TryGetValue(key: type, value: out object storageObj))
+            {
+                ((XCompStorage<T>)storageObj).Enable();
+            }
+        }
+
+        // Try get component data. Should use from cached storage
+        public bool TryGetXComponent<T>(out T component) where T : struct
+        {
+            Type type = typeof(T);
+            if (_components.TryGetValue(key: type, value: out object storageObj))
+            {
+                var storage = (XCompStorage<T>)storageObj;
+                if (storage.IsEnable())
+                {
+                    component = storage.Get();
+                    return true;
+                }
+            }
+
+            component = default(T);
+            return false;
+        }
+
+        // Set/update component. Should use from cached storage
+        public void SetXComponent<T>(T component) where T : struct
+        {
+            Type type = typeof(T);
+            if (_components.TryGetValue(key: type, value: out object storageObj))
+            {
+                ((XCompStorage<T>)storageObj).Set(value: component);
+            }
+            else
+            {
+                _components[key: type] = new XCompStorage<T>(value: component);
+            }
+        }
+
+        public IEnumerable<object> GetAllXComponents()
+        {
+            return _components.Values;
+        }
+
+        #endregion
+
+        public void RegisterXCompSystem(XCompSystem system)
+        {
+            if (system == null) return;
+            _xCompSystems.Add(system: system);
+        }
+        private void OnEnable()
+        {
+            for (int i = 0; i < _xCompSystems.Count; i++)
+            {
+                _xCompSystems[index: i].Enable();
+            }
+        }
+
+        private void Update()
+        {
+            for (int i = 0; i < _xCompSystems.Count; i++)
+            {
+                _xCompSystems[index: i].Update();
+            }
+        }
+
+        private void OnDisable()
+        {
+            for (int i = 0; i < _xCompSystems.Count; i++)
+            {
+                _xCompSystems[index: i].Disable();
+            }
+        }
     }
 }
