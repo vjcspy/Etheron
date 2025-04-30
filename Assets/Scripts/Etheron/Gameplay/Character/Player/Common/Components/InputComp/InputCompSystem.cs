@@ -24,7 +24,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.InputComp
             _playerActions = InputManager.Instance.InputActions.Player;
 
             _playerActions.Enable();
-            _playerActions.Jump.performed += _onJumpPerformed;
+            _playerActions.Jump.started += _onJumpPerformed;
         }
 
         public override void Update()

@@ -1,4 +1,5 @@
-﻿using Etheron.Core.XComponent;
+﻿using Cysharp.Threading.Tasks;
+using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
 using UnityEngine;
 namespace Etheron.Gameplay.Character.Player.Common.Components.GroundDetectionComp
@@ -29,13 +30,19 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.GroundDetectionCom
             groundDetectionCompData.isGrounded = PerformGroundCheck(groundDetectionCompData: groundDetectionCompData);
             _groundDetectionCompStorage.Set(value: groundDetectionCompData);
 
-            if (_xMachineEntity.xMachine.currentStateId == (int)PlayerState.Fall && groundDetectionCompData.isGrounded)
+            if (
+                _xMachineEntity.xMachine.currentStateId is (int)PlayerState.Fall or (int)PlayerState.Jump
+                && groundDetectionCompData.isGrounded
+                )
             {
                 _xMachineEntity.xMachine.Transition(toStateId: (int)PlayerState.Idle);
             }
-            else if (_xMachineEntity.xMachine.currentStateId != (int)PlayerState.Jump && !groundDetectionCompData.isGrounded)
+            else if (!groundDetectionCompData.isGrounded)
             {
-                _xMachineEntity.xMachine.Transition(toStateId: (int)PlayerState.Fall);
+                if (_xMachineEntity.xMachine.currentStateId != (int)PlayerState.Jump)
+                {
+                    _xMachineEntity.xMachine.Transition(toStateId: (int)PlayerState.Fall);
+                }
             }
         }
 

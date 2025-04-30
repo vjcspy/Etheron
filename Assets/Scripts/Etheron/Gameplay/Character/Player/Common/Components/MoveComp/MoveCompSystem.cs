@@ -34,21 +34,24 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.MoveComp
                 return;
             }
 
-            InputCompData input = _inputCompStorage.Get();
+            InputCompData inputCompData = _inputCompStorage.Get();
             VisualizationCompData visualization = _visualizationCompStorage.Get();
-            Vector2 movementInput = input.movementInput;
+            MoveCompData moveCompData = _moveCompStorage.Get();
+            Vector2 movementInput = inputCompData.movementInput;
 
             if (Mathf.Abs(f: movementInput.x) < 0.01f)
             {
                 visualization.facingDirection = FacingDirection.Front;
-                _visualizationCompStorage.Set(visualization);
+                _visualizationCompStorage.Set(value: visualization);
+
                 _xMachineEntity.xMachine.Transition(toStateId: (int)PlayerState.Idle);
+
                 return;
             }
-            MoveCompData move = _moveCompStorage.Get();
+
 
             // Chọn speed
-            float moveSpeed = move.moveType == MoveType.Run ? move.runSpeed : move.walkSpeed;
+            float moveSpeed = moveCompData.moveType == MoveType.Run ? moveCompData.runSpeed : moveCompData.walkSpeed;
 
             // Di chuyển chỉ theo trục X (left/right), giữ Y cho gravity, Z luôn = 0
             Vector3 velocity = new Vector3(x: movementInput.x * moveSpeed, y: _rb.linearVelocity.y, z: 0f);
@@ -57,7 +60,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.MoveComp
 
             // Update visualization
             visualization.facingDirection = movementInput.x > 0f ? FacingDirection.Right : FacingDirection.Left;
-            _visualizationCompStorage.Set(visualization);
+            _visualizationCompStorage.Set(value: visualization);
 
             // Safe to transition because each state has its own guard
             _xMachineEntity.xMachine.Transition(toStateId: (int)PlayerState.Running);

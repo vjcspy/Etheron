@@ -63,7 +63,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.VisualizationComp
 
                 bool shouldSet = UpdateAnimationState(data: ref data);
 
-                UpdateYVelocityIfAir();
+                // UpdateYVelocityIfAir();
 
                 if (UpdateFacingDirection(data: ref data))
                 {

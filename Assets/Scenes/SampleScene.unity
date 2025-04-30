@@ -499,6 +499,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4285515217316361247, guid: ace7d8d212358e74080d73ac95198c38, type: 3}
+      propertyPath: jumpHeight
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6507745225949380169, guid: ace7d8d212358e74080d73ac95198c38, type: 3}
+      propertyPath: checkType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6507745225949380169, guid: ace7d8d212358e74080d73ac95198c38, type: 3}
+      propertyPath: sphereRadius
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6507745225949380169, guid: ace7d8d212358e74080d73ac95198c38, type: 3}
+      propertyPath: checkDistance
+      value: 0.56
+      objectReference: {fileID: 0}
+    - target: {fileID: 6507745225949380169, guid: ace7d8d212358e74080d73ac95198c38, type: 3}
+      propertyPath: checkOffset.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6507745225949380169, guid: ace7d8d212358e74080d73ac95198c38, type: 3}
+      propertyPath: checkOffset.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8481140593466036460, guid: ace7d8d212358e74080d73ac95198c38, type: 3}
       propertyPath: m_Name
       value: CatGirl
