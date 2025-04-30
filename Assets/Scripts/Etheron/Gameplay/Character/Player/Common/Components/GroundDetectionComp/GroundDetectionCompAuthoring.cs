@@ -24,7 +24,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.GroundDetectionCom
                     Gizmos.DrawLine(from: origin, to: origin + Vector3.down * checkDistance);
                     break;
                 case GroundDetectionCheckType.SphereCast:
-                    Gizmos.DrawWireSphere(center: origin, radius: sphereRadius);
+                    // Gizmos.DrawWireSphere(center: origin, radius: sphereRadius);
                     Gizmos.DrawWireSphere(center: origin + Vector3.down * checkDistance, radius: sphereRadius);
                     Gizmos.DrawLine(from: origin + Vector3.left * sphereRadius, to: origin + Vector3.down * checkDistance + Vector3.left * sphereRadius);
                     Gizmos.DrawLine(from: origin + Vector3.right * sphereRadius, to: origin + Vector3.down * checkDistance + Vector3.right * sphereRadius);
