@@ -1,0 +1,35 @@
+.menu-btn {
+    flex-direction: row-reverse;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+    margin-left: 20px;
+    -unity-slice-type: sliced;
+    background-color: rgb(255, 255, 255);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    scale: 1 1;
+    transform-origin: center;
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 0;
+    -unity-slice-top: 0;
+    -unity-slice-right: 0;
+    -unity-slice-bottom: 0;
+}
+
+.menu-btn:hover {
+    transition-duration: 0.5s;
+    transition-timing-function: ease-out-elastic;
+    scale: 1.1 1.1;
+}
+
+.submit-btn {
+    width: 120px;
+    height: 30px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
