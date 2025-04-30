@@ -31,23 +31,28 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.JumpComp
                 JumpCompData jumpCompData = _jumpCompStorage.Get();
                 GroundDetectionCompData groundDetectionCompData = _groundDetectionCompStorage.Get();
                 InputCompData inputCompData = _inputCompStorage.Get();
+
                 if (inputCompData.jumpPressed)
                 {
                     if (groundDetectionCompData.isGrounded)
                     {
-                        float jumpVelocity = Mathf.Sqrt(f: 2 * _gravity.magnitude * jumpCompData.jumpHeight);
-
-                        Vector3 currentVelocity = _rb.linearVelocity;
-                        currentVelocity.y = jumpVelocity;
-
-                        _rb.linearVelocity = currentVelocity;
+                        _xMachineEntity.xMachine.Transition(toStateId: (int)PlayerState.Jump);
+                        Jump(jumpCompData: jumpCompData);
                     }
 
-                    // Reset jumpPressed to false after applying jump
+                    // always reset jumpPressed
                     inputCompData.jumpPressed = false;
                     _inputCompStorage.Set(value: inputCompData);
                 }
             }
+        }
+        private void Jump(JumpCompData jumpCompData)
+        {
+
+            float jumpVelocity = Mathf.Sqrt(f: 2 * _gravity.magnitude * jumpCompData.jumpHeight);
+            Vector3 currentVelocity = _rb.linearVelocity;
+            currentVelocity.y = jumpVelocity;
+            _rb.linearVelocity = currentVelocity;
         }
         public override void Disable()
         {

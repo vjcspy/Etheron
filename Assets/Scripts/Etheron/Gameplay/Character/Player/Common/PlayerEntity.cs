@@ -15,7 +15,8 @@ namespace Etheron.Gameplay.Character.Player.Common
                 new PlayerIdleState(id: (int)PlayerState.Idle, xMachineEntity: this),
                 new PlayerWalkingState(id: (int)PlayerState.Walking, xMachineEntity: this),
                 new PlayerRunningState(id: (int)PlayerState.Running, xMachineEntity: this),
-                new PlayerAirState(id: (int)PlayerState.Air, xMachineEntity: this),
+                new PlayerJumpState(id: (int)PlayerState.Jump, xMachineEntity: this),
+                new PlayerFallState(id: (int)PlayerState.Fall, xMachineEntity: this),
             };
         }
 

@@ -86,7 +86,8 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.VisualizationComp
                 (int)PlayerState.Idle => (int)PlayerAnimationStateParam.Idle,
                 (int)PlayerState.Walking => (int)PlayerAnimationStateParam.Walking,
                 (int)PlayerState.Running => (int)PlayerAnimationStateParam.Running,
-                (int)PlayerState.Air => (int)PlayerAnimationStateParam.Air,
+                (int)PlayerState.Jump => (int)PlayerAnimationStateParam.Jump,
+                (int)PlayerState.Fall => (int)PlayerAnimationStateParam.Fall,
                 _ => 0
             };
 
@@ -107,7 +108,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.VisualizationComp
 
         private void UpdateYVelocityIfAir()
         {
-            if (_currentAnimationState == (int)PlayerAnimationStateParam.Air)
+            if (_currentAnimationState == (int)PlayerAnimationStateParam.Jump)
             {
                 _animator.SetFloat(id: AnimatorYVelocityHash, value: _rb.linearVelocity.y);
             }

@@ -6,7 +6,8 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.VisualizationComp
         Idle = 0,
         Walking = 1,
         Running = 2,
-        Air = 5
+        Jump = 5,
+        Fall = 6,
     }
 
     public struct VisualizationCompData

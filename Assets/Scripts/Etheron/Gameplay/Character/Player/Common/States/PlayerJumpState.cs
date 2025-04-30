@@ -1,25 +1,19 @@
 ﻿using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
-using Etheron.Gameplay.Character.Player.Common.Components;
 using Etheron.Gameplay.Character.Player.Common.Components.GroundDetectionComp;
 namespace Etheron.Gameplay.Character.Player.Common.States
 {
-    public class PlayerAirState : XMachineState
+    public class PlayerJumpState : XMachineState
     {
         private XCompStorage<GroundDetectionCompData> _groundDetectionCompStorage;
 
-        public PlayerAirState(int id, XMachineEntity xMachineEntity) : base(id: id, xMachineEntity: xMachineEntity)
+        public PlayerJumpState(int id, XMachineEntity xMachineEntity) : base(id: id, xMachineEntity: xMachineEntity)
         {
 
         }
         public override void OnCreate()
         {
             _groundDetectionCompStorage = _xMachineEntity.GetXStorage<GroundDetectionCompData>();
-        }
-
-        internal override bool Guard()
-        {
-            return true;
         }
     }
 }
