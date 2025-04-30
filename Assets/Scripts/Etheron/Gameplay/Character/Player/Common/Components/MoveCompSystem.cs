@@ -38,7 +38,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components
 
             if (Mathf.Abs(f: movementInput.x) < 0.01f)
             {
-                visualization.facingDirection = FacingDirection.None;
+                visualization.facingDirection = FacingDirection.Front;
                 _visualizationCompStorage.Set(visualization);
                 _xMachineEntity.xMachine.Transition(toStateId: (int)PlayerState.Idle);
                 return;
