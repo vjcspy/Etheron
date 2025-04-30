@@ -1,5 +1,6 @@
 ﻿using Etheron.Core.Component;
 using Etheron.Core.XMachine;
+using Etheron.Gameplay.Character.Player.Common.Components.InputComp;
 using Etheron.Types;
 using UnityEngine;
 namespace Etheron.Gameplay.Character.Player.Common.Components
@@ -16,7 +17,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components
         {
         }
 
-        public override void Start()
+        public override void Enable()
         {
             _moveCompStorage = _xMachineEntity.GetOrCreateXStorage<MoveCompData>();
             _inputCompStorage = _xMachineEntity.GetOrCreateXStorage<InputCompData>();
@@ -61,7 +62,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components
             _xMachineEntity.xMachine.Transition(toStateId: (int)PlayerState.Running);
         }
 
-        public override void Stop()
+        public override void Disable()
         {
             // Optional clear nếu cần
         }

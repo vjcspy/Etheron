@@ -52,9 +52,9 @@ namespace Etheron.Core.Component
         {
             _xMachineEntity = xMachineEntity;
         }
-        public abstract void Start();
+        public abstract void Enable();
         public abstract void Update();
-        public abstract void Stop();
+        public abstract void Disable();
     }
 
     [RequireComponent(typeof(XMachineEntity))]

@@ -503,10 +503,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: CatGirl
       objectReference: {fileID: 0}
-    - target: {fileID: 8574875350712980991, guid: ace7d8d212358e74080d73ac95198c38, type: 3}
-      propertyPath: m_ApplyRootMotion
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 9015464887314330393, guid: ace7d8d212358e74080d73ac95198c38, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.26

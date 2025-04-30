@@ -13,7 +13,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components
         {
         }
 
-        public override void Start()
+        public override void Enable()
         {
             _groundDetectionCompStorage = _xMachineEntity.GetOrCreateXStorage<GroundDetectionCompData>();
         }
@@ -47,7 +47,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components
             }
         }
 
-        public override void Stop()
+        public override void Disable()
         {
         }
     }

@@ -1,6 +1,6 @@
 ﻿using Etheron.Core.Component;
 using Etheron.Core.XMachine;
-namespace Etheron.Gameplay.Character.Player.Common.Components
+namespace Etheron.Gameplay.Character.Player.Common.Components.InputComp
 {
     public class InputCompAuthoring : XCompAuthoring
     {

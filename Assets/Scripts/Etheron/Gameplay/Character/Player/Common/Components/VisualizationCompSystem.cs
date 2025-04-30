@@ -19,7 +19,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components
         {
         }
 
-        public override void Start()
+        public override void Enable()
         {
             _visualizationCompStorage = _xMachineEntity.GetOrCreateXStorage<VisualizationCompData>();
             _animator = _xMachineEntity.GetComponentInChildren<Animator>();
@@ -31,7 +31,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components
         {
         }
 
-        public override void Stop()
+        public override void Disable()
         {
             _isRunning = false; // Dừng loop khi component bị stop
         }

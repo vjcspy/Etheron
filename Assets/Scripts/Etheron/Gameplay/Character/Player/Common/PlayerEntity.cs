@@ -19,24 +19,5 @@ namespace Etheron.Gameplay.Character.Player.Common
         }
 
         #endregion
-
-        #region Handle Input
-
-        private void OnEnable()
-        {
-            // Initialize the input system
-            InputSystem_Actions.PlayerActions playerActions = InputManager.Instance.InputActions.Player;
-            playerActions.Enable();
-        }
-
-        private void OnDisable()
-        {
-            // Disable the input system
-            InputSystem_Actions.PlayerActions playerActions = InputManager.Instance.InputActions.Player;
-            playerActions.Disable();
-        }
-
-        #endregion
-
     }
 }

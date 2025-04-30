@@ -27,8 +27,8 @@ namespace Etheron.Core.XMachine
 
     public class XMachine
     {
-        public int currentStateId;
         private Dictionary<int, XMachineState> _states;
+        public int currentStateId;
         public XMachine RegisterMachineStates(XMachineState[] machineStates)
         {
             _states = machineStates.ToDictionary(keySelector: state => state.id);
@@ -249,12 +249,19 @@ namespace Etheron.Core.XMachine
         {
             if (system == null) return;
             _xCompSystems.Add(system: system);
-            system.Start();
         }
 
         protected virtual void Awake()
         {
             xMachine = xMachine.RegisterMachineStates(machineStates: GetXMachineStates());
+        }
+
+        private void OnEnable()
+        {
+            for (int i = 0; i < _xCompSystems.Count; i++)
+            {
+                _xCompSystems[index: i].Enable();
+            }
         }
 
         // protected abstract void Authoring();
@@ -272,11 +279,11 @@ namespace Etheron.Core.XMachine
             }
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             for (int i = 0; i < _xCompSystems.Count; i++)
             {
-                _xCompSystems[index: i].Stop();
+                _xCompSystems[index: i].Disable();
             }
         }
 
