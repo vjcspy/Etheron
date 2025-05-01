@@ -44,7 +44,7 @@ namespace Etheron.Core.XMachine
 
         public XMachine Start(Enum initialStateId = null)
         {
-            if (initialStateId == null && (_states == null || _states.Count == 0))
+            if (initialStateId == null && _states.Count == 0)
             {
                 return this;
             }
@@ -148,11 +148,7 @@ namespace Etheron.Core.XMachine
 
         protected virtual void Awake()
         {
-            var states = GetXMachineStates();
-            if (states.Length > 0)
-            {
-                xMachine.RegisterMachineStates(machineStates: GetXMachineStates());
-            }
+            xMachine.RegisterMachineStates(machineStates: GetXMachineStates());
         }
 
         protected virtual void Start()
