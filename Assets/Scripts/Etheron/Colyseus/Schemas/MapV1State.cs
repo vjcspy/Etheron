@@ -11,11 +11,11 @@ using UnityEngine.Scripting;
 #endif
 
 namespace Etheron.Colyseus.Schemas {
-	public partial class LobbyRoomState : Schema {
+	public partial class MapV1State : Schema {
 #if UNITY_5_3_OR_NEWER
 [Preserve]
 #endif
-public LobbyRoomState() { }
+public MapV1State() { }
 		[Type(0, "map", typeof(MapSchema<Player>))]
 		public MapSchema<Player> players = null;
 	}
