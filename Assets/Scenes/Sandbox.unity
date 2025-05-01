@@ -907,7 +907,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1946550957}
-  - component: {fileID: 1946550959}
   - component: {fileID: 1946550958}
   m_Layer: 0
   m_Name: ________________ Manager ________________
@@ -940,22 +939,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1946550956}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dad9061f4aaa471c9fa8cf25a4d1166b, type: 3}
+  m_Script: {fileID: 11500000, guid: 50caa95c75c843df8548e9356f086907, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverEndpoint: ws://localhost:2567
---- !u!114 &1946550959
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1946550956}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f34e46e2dff4d89a52483859c79d64c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  managerPrefabs:
+  - {fileID: 2116365759596176765, guid: 28af6fd040b74e348a1a46f3b12ac264, type: 3}
+  - {fileID: 447542961584007027, guid: 1b68fb47f8263214ca152a08999e85d8, type: 3}
 --- !u!1001 &2007193024
 PrefabInstance:
   m_ObjectHideFlags: 0
