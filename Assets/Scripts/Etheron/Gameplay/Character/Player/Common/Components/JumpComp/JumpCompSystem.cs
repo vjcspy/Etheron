@@ -19,9 +19,9 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.JumpComp
 
         public override void Enable()
         {
-            _jumpCompStorage = _xMachineEntity.GetXStorage<JumpCompData>();
-            _groundDetectionCompStorage = _xMachineEntity.GetXStorage<GroundDetectionCompData>();
-            _inputCompStorage = _xMachineEntity.GetXStorage<InputCompData>();
+            _jumpCompStorage = _xMachineEntity.GetStorage<JumpCompData>();
+            _groundDetectionCompStorage = _xMachineEntity.GetStorage<GroundDetectionCompData>();
+            _inputCompStorage = _xMachineEntity.GetStorage<InputCompData>();
             _gravity = Physics.gravity;
             _rb = _xMachineEntity.GetComponent<Rigidbody>();
         }

@@ -20,7 +20,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.InputComp
 
         public override void Enable()
         {
-            _inputCompStorage = _xMachineEntity.GetOrCreateXStorage<InputCompData>();
+            _inputCompStorage = _xMachineEntity.GetOrCreateStorage<InputCompData>();
             _playerActions = InputManager.Instance.InputActions.Player;
 
             _playerActions.Enable();

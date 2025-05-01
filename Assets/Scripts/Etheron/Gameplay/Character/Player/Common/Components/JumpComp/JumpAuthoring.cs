@@ -9,12 +9,12 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.JumpComp
         [SerializeField] private float jumpHeight = 2f;
         protected override void Authoring(XMachineEntity xMachineEntity)
         {
-            xMachineEntity.AddXComponent(
+            xMachineEntity.AddComponentData(
                 component: new JumpCompData
                 {
                     jumpHeight = jumpHeight,
                 });
-            xMachineEntity.RegisterXCompSystem(system: new JumpCompSystem(xMachineEntity: xMachineEntity));
+            xMachineEntity.AddSystem(system: new JumpCompSystem(xMachineEntity: xMachineEntity));
         }
     }
 }

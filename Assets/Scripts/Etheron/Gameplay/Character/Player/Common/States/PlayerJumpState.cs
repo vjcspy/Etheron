@@ -13,7 +13,7 @@ namespace Etheron.Gameplay.Character.Player.Common.States
         }
         public override void OnCreate()
         {
-            _groundDetectionCompStorage = _xMachineEntity.GetXStorage<GroundDetectionCompData>();
+            _groundDetectionCompStorage = _xMachineEntity.GetStorage<GroundDetectionCompData>();
         }
     }
 }

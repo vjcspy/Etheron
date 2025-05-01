@@ -42,7 +42,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.VisualizationComp
 
         private void InitializeReferences()
         {
-            _visualizationCompStorage = _xMachineEntity.GetOrCreateXStorage<VisualizationCompData>();
+            _visualizationCompStorage = _xMachineEntity.GetOrCreateStorage<VisualizationCompData>();
             _animator = _xMachineEntity.GetComponentInChildren<Animator>();
             _rb = _xMachineEntity.GetComponent<Rigidbody>();
         }

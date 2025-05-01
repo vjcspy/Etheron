@@ -6,9 +6,9 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.InputComp
     {
         protected override void Authoring(XMachineEntity xMachineEntity)
         {
-            xMachineEntity.AddXComponent(
+            xMachineEntity.AddComponentData(
                 component: new InputCompData());
-            xMachineEntity.RegisterXCompSystem(system: new InputCompSystem(xMachineEntity: xMachineEntity));
+            xMachineEntity.AddSystem(system: new InputCompSystem(xMachineEntity: xMachineEntity));
         }
     }
 }

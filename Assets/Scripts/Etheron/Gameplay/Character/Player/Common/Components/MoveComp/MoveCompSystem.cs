@@ -20,9 +20,9 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.MoveComp
 
         public override void Enable()
         {
-            _moveCompStorage = _xMachineEntity.GetOrCreateXStorage<MoveCompData>();
-            _inputCompStorage = _xMachineEntity.GetOrCreateXStorage<InputCompData>();
-            _visualizationCompStorage = _xMachineEntity.GetOrCreateXStorage<VisualizationCompData>();
+            _moveCompStorage = _xMachineEntity.GetOrCreateStorage<MoveCompData>();
+            _inputCompStorage = _xMachineEntity.GetOrCreateStorage<InputCompData>();
+            _visualizationCompStorage = _xMachineEntity.GetOrCreateStorage<VisualizationCompData>();
 
             _rb = _xMachineEntity.GetComponent<Rigidbody>();
         }

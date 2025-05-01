@@ -85,7 +85,7 @@ namespace Etheron.Core.XComponent
         private readonly XCompSystemArray _xCompSystems = new XCompSystemArray();
         #region Component Storage
 
-        public void AddXComponent<T>(T component) where T : struct
+        public void AddComponentData<T>(T component) where T : struct
         {
             Type type = typeof(T);
             if (!_components.TryGetValue(key: type, value: out object storageObj))
@@ -100,7 +100,7 @@ namespace Etheron.Core.XComponent
             }
         }
 
-        public XCompStorage<T> GetOrCreateXStorage<T>() where T : struct
+        public XCompStorage<T> GetOrCreateStorage<T>() where T : struct
         {
             Type type = typeof(T);
             if (!_components.TryGetValue(key: type, value: out object storageObj))
@@ -113,12 +113,12 @@ namespace Etheron.Core.XComponent
             return (XCompStorage<T>)storageObj;
         }
 
-        public XCompStorage<T> GetXStorage<T>() where T : struct
+        public XCompStorage<T> GetStorage<T>() where T : struct
         {
-            return GetOrCreateXStorage<T>();
+            return GetOrCreateStorage<T>();
         }
 
-        public bool HasXComponent<T>() where T : struct
+        public bool HasComponent<T>() where T : struct
         {
             Type type = typeof(T);
             if (_components.TryGetValue(key: type, value: out object storageObj))
@@ -128,7 +128,7 @@ namespace Etheron.Core.XComponent
             return false;
         }
 
-        public void DisableXComponent<T>() where T : struct
+        public void DisableComponent<T>() where T : struct
         {
             Type type = typeof(T);
             if (_components.TryGetValue(key: type, value: out object storageObj))
@@ -136,7 +136,7 @@ namespace Etheron.Core.XComponent
                 ((XCompStorage<T>)storageObj).Disable();
             }
         }
-        public void EnableXComponent<T>() where T : struct
+        public void EnableComponent<T>() where T : struct
         {
             Type type = typeof(T);
             if (_components.TryGetValue(key: type, value: out object storageObj))
@@ -146,45 +146,45 @@ namespace Etheron.Core.XComponent
         }
 
         // Try get component data. Should use from cached storage
-        public bool TryGetXComponent<T>(out T component) where T : struct
-        {
-            Type type = typeof(T);
-            if (_components.TryGetValue(key: type, value: out object storageObj))
-            {
-                var storage = (XCompStorage<T>)storageObj;
-                if (storage.IsEnable())
-                {
-                    component = storage.Get();
-                    return true;
-                }
-            }
-
-            component = default(T);
-            return false;
-        }
-
+        // public bool TryGetXComponent<T>(out T component) where T : struct
+        // {
+        //     Type type = typeof(T);
+        //     if (_components.TryGetValue(key: type, value: out object storageObj))
+        //     {
+        //         var storage = (XCompStorage<T>)storageObj;
+        //         if (storage.IsEnable())
+        //         {
+        //             component = storage.Get();
+        //             return true;
+        //         }
+        //     }
+        //
+        //     component = default(T);
+        //     return false;
+        // }
+        //
         // Set/update component. Should use from cached storage
-        public void SetXComponent<T>(T component) where T : struct
-        {
-            Type type = typeof(T);
-            if (_components.TryGetValue(key: type, value: out object storageObj))
-            {
-                ((XCompStorage<T>)storageObj).Set(value: component);
-            }
-            else
-            {
-                _components[key: type] = new XCompStorage<T>(value: component);
-            }
-        }
+        // public void SetXComponent<T>(T component) where T : struct
+        // {
+        //     Type type = typeof(T);
+        //     if (_components.TryGetValue(key: type, value: out object storageObj))
+        //     {
+        //         ((XCompStorage<T>)storageObj).Set(value: component);
+        //     }
+        //     else
+        //     {
+        //         _components[key: type] = new XCompStorage<T>(value: component);
+        //     }
+        // }
 
-        public IEnumerable<object> GetAllXComponents()
+        public IEnumerable<object> GetAllComponents()
         {
             return _components.Values;
         }
 
         #endregion
 
-        public void RegisterXCompSystem(XCompSystem system)
+        public void AddSystem(XCompSystem system)
         {
             if (system == null) return;
             _xCompSystems.Add(system: system);

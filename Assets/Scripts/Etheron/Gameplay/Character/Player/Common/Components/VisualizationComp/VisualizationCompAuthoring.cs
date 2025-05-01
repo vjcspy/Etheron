@@ -9,14 +9,14 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.VisualizationComp
         [SerializeField] private int animationUpdateIntervalMs = 50;
         protected override void Authoring(XMachineEntity xMachineEntity)
         {
-            xMachineEntity.AddXComponent(
+            xMachineEntity.AddComponentData(
                 component: new VisualizationCompData
                 {
                     animationUpdateIntervalMs = animationUpdateIntervalMs,
                     animationState = 0,
                     facingDirection = FacingDirection.Front
                 });
-            xMachineEntity.RegisterXCompSystem(system: new VisualizationCompSystem(xMachineEntity: xMachineEntity));
+            xMachineEntity.AddSystem(system: new VisualizationCompSystem(xMachineEntity: xMachineEntity));
         }
     }
 }
