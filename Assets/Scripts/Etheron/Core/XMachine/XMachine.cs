@@ -44,6 +44,11 @@ namespace Etheron.Core.XMachine
 
         public XMachine Start(Enum initialStateId = null)
         {
+            if (initialStateId == null && (_states == null || _states.Count == 0))
+            {
+                return this;
+            }
+
             int id = initialStateId == null ? _states.First().Value.id : EnumUtility.ToIntFast(enumValue: initialStateId);
 
             currentStateId = id;
@@ -139,14 +144,13 @@ namespace Etheron.Core.XMachine
 
     public abstract class XMachineEntity : XEntity
     {
-        public XMachine xMachine { get; private set; }
+        public XMachine xMachine { get; } = new XMachine();
 
         protected virtual void Awake()
         {
             var states = GetXMachineStates();
             if (states.Length > 0)
             {
-                xMachine = new XMachine();
                 xMachine.RegisterMachineStates(machineStates: GetXMachineStates());
             }
         }

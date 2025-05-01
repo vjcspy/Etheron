@@ -1,5 +1,4 @@
 ﻿using Etheron.Core.XComponent;
-using Etheron.Core.XMachine;
 using System;
 using UnityEngine;
 namespace Etheron.Gameplay.Character.Player.Common.Components.GroundDetectionComp
@@ -36,9 +35,9 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.GroundDetectionCom
             }
         }
 
-        protected override void Authoring(XMachineEntity xMachineEntity)
+        protected override void Authoring()
         {
-            xMachineEntity.AddComponentData(
+            AddComponentData(
                 component: new GroundDetectionCompData
                 {
                     checkType = checkType,
@@ -50,7 +49,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.GroundDetectionCom
                     isGrounded = false
                 }
             );
-            xMachineEntity.AddSystem(system: new GroundDetectionCompSystem(xMachineEntity: xMachineEntity));
+            AddSystem(system: new GroundDetectionCompSystem(xMachineEntity: xMachineEntity));
         }
     }
 }

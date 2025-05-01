@@ -1,5 +1,4 @@
 ﻿using Etheron.Core.XComponent;
-using Etheron.Core.XMachine;
 using Etheron.Types;
 using UnityEngine;
 namespace Etheron.Gameplay.Character.Player.Common.Components.VisualizationComp
@@ -7,16 +6,16 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.VisualizationComp
     public class VisualizationCompAuthoring : XCompAuthoring
     {
         [SerializeField] private int animationUpdateIntervalMs = 50;
-        protected override void Authoring(XMachineEntity xMachineEntity)
+        protected override void Authoring()
         {
-            xMachineEntity.AddComponentData(
+            AddComponentData(
                 component: new VisualizationCompData
                 {
                     animationUpdateIntervalMs = animationUpdateIntervalMs,
                     animationState = 0,
                     facingDirection = FacingDirection.Front
                 });
-            xMachineEntity.AddSystem(system: new VisualizationCompSystem(xMachineEntity: xMachineEntity));
+            AddSystem(system: new VisualizationCompSystem(xMachineEntity: xMachineEntity));
         }
     }
 }

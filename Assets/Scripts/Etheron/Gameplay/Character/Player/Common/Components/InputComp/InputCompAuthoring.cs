@@ -1,14 +1,13 @@
 ﻿using Etheron.Core.XComponent;
-using Etheron.Core.XMachine;
 namespace Etheron.Gameplay.Character.Player.Common.Components.InputComp
 {
     public class InputCompAuthoring : XCompAuthoring
     {
-        protected override void Authoring(XMachineEntity xMachineEntity)
+        protected override void Authoring()
         {
-            xMachineEntity.AddComponentData(
+            AddComponentData(
                 component: new InputCompData());
-            xMachineEntity.AddSystem(system: new InputCompSystem(xMachineEntity: xMachineEntity));
+            AddSystem(system: new InputCompSystem(xMachineEntity: xMachineEntity));
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.InputComp
             _onJumpPerformed = OnJumpPerformed;
         }
 
-        public override void Enable()
+        public override void OnCreate()
         {
             _inputCompStorage = _xMachineEntity.GetOrCreateStorage<InputCompData>();
             _playerActions = InputManager.Instance.InputActions.Player;
@@ -48,7 +48,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.InputComp
             _inputCompStorage.Set(inputData);
         }
 
-        public override void Disable()
+        public override void OnDestroy()
         {
             _playerActions.Jump.performed -= _onJumpPerformed;
             _playerActions.Disable();

@@ -7,9 +7,9 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.MoveComp
     {
         [SerializeField] private float _runSpeed = 5f;
         [SerializeField] private float _walkSpeed = 2f;
-        protected override void Authoring(XMachineEntity xMachineEntity)
+        protected override void Authoring()
         {
-            xMachineEntity.AddComponentData(
+            AddComponentData(
                 component: new MoveCompData
                 {
                     moveType = MoveType.Run,
@@ -17,7 +17,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.MoveComp
                     walkSpeed = _walkSpeed
                 }
             );
-            xMachineEntity.AddSystem(system: new MoveCompSystem(xMachineEntity: xMachineEntity));
+            AddSystem(system: new MoveCompSystem(xMachineEntity: xMachineEntity));
         }
     }
 }

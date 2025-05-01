@@ -18,7 +18,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.MoveComp
         {
         }
 
-        public override void Enable()
+        public override void OnCreate()
         {
             _moveCompStorage = _xMachineEntity.GetOrCreateStorage<MoveCompData>();
             _inputCompStorage = _xMachineEntity.GetOrCreateStorage<InputCompData>();
@@ -66,7 +66,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.MoveComp
             _xMachineEntity.xMachine.Transition(toStateId: (int)PlayerState.Running);
         }
 
-        public override void Disable()
+        public override void OnDestroy()
         {
             // Optional clear nếu cần
         }

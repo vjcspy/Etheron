@@ -23,7 +23,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.VisualizationComp
         {
         }
 
-        public override void Enable()
+        public override void OnCreate()
         {
             InitializeReferences();
             _isRunning = true;
@@ -35,7 +35,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.VisualizationComp
             // Not used
         }
 
-        public override void Disable()
+        public override void OnDestroy()
         {
             _isRunning = false;
         }

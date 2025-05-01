@@ -10,7 +10,7 @@ namespace Etheron.UI.Controllers
     [CreateAssetMenu(menuName = "UI Toolkit/Controllers/ColyseusTestController")]
     public class ColyseusTestControllerAsset : UIControllerAssetBase
     {
-        private StateCallbackStrategy<SandboxRoomState> callbacks;
+        private StateCallbackStrategy<MapState> callbacks;
         private Button joinRoomButton;
         private Button loginButton;
 
@@ -26,7 +26,7 @@ namespace Etheron.UI.Controllers
         private async void OnJoinRoomClicked()
         {
             Debug.Log(message: "OnJoinRoomClicked");
-            var room = await ColyseusManager.Instance.client.JoinOrCreate<SandboxRoomState>(roomName: "sandbox");
+            var room = await ColyseusManager.Instance.client.JoinOrCreate<MapState>(roomName: "sandbox");
 
             // get state callbacks handler
             if (callbacks == null)

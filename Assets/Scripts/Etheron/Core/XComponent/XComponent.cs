@@ -54,35 +54,49 @@ namespace Etheron.Core.XComponent
         {
             _xMachineEntity = xMachineEntity;
         }
-        public abstract void Enable();
+        public abstract void OnCreate();
         public abstract void Update();
-        public abstract void Disable();
+        public abstract void OnDestroy();
+
+        protected XCompStorage<T> GetStorage<T>() where T : struct
+        {
+            return _xMachineEntity.GetOrCreateStorage<T>();
+        }
     }
 
     [RequireComponent(requiredComponent: typeof(XMachineEntity))]
     public abstract class XCompAuthoring : MonoBehaviour
     {
-        // private XMachineEntity xMachineEntity;
+        private XCompSystem _system;
+        protected XMachineEntity xMachineEntity;
         private void Awake()
         {
-            XMachineEntity xMachineEntity = GetComponent<XMachineEntity>();
+            xMachineEntity = GetComponent<XMachineEntity>();
             if (xMachineEntity == null)
             {
                 Debug.LogError(message: "XCompAuthoring must be attached to a GameObject with an XMachineEntity component.");
-                return;
             }
-
-            // Add the component to the XMachineEntity
-            Authoring(xMachineEntity: xMachineEntity);
+            Authoring();
         }
 
-        protected abstract void Authoring(XMachineEntity xMachineEntity);
+        protected void AddComponentData<T>(T component) where T : struct
+        {
+            xMachineEntity.AddComponentData(component: component);
+        }
+
+        protected void AddSystem(XCompSystem system)
+        {
+            xMachineEntity.AddSystem(system: system);
+        }
+
+        protected abstract void Authoring();
     }
 
     public abstract class XEntity : MonoBehaviour
     {
         private readonly Dictionary<Type, object> _components = new Dictionary<Type, object>();
         private readonly XCompSystemArray _xCompSystems = new XCompSystemArray();
+
         #region Component Storage
 
         public void AddComponentData<T>(T component) where T : struct
@@ -181,21 +195,16 @@ namespace Etheron.Core.XComponent
         {
             return _components.Values;
         }
-
-        #endregion
-
         public void AddSystem(XCompSystem system)
         {
             if (system == null) return;
             _xCompSystems.Add(system: system);
+            system.OnCreate();
         }
-        private void OnEnable()
-        {
-            for (int i = 0; i < _xCompSystems.Count; i++)
-            {
-                _xCompSystems[index: i].Enable();
-            }
-        }
+
+        #endregion
+
+        #region Lifecycle
 
         private void Update()
         {
@@ -205,12 +214,15 @@ namespace Etheron.Core.XComponent
             }
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
             for (int i = 0; i < _xCompSystems.Count; i++)
             {
-                _xCompSystems[index: i].Disable();
+                _xCompSystems[index: i].OnDestroy();
             }
         }
+
+        #endregion
+
     }
 }

@@ -11,11 +11,11 @@ using UnityEngine.Scripting;
 #endif
 
 namespace Etheron.Colyseus.Schemas {
-	public partial class SandboxRoomState : Schema {
+	public partial class MapState : Schema {
 #if UNITY_5_3_OR_NEWER
 [Preserve]
 #endif
-public SandboxRoomState() { }
+public MapState() { }
 		[Type(0, "map", typeof(MapSchema<Player>))]
 		public MapSchema<Player> players = null;
 	}

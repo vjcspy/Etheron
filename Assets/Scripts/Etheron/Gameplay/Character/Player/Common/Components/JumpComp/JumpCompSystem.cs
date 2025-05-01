@@ -17,7 +17,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.JumpComp
 
         public JumpCompSystem(XMachineEntity xMachineEntity) : base(xMachineEntity: xMachineEntity) { }
 
-        public override void Enable()
+        public override void OnCreate()
         {
             _jumpCompStorage = _xMachineEntity.GetStorage<JumpCompData>();
             _groundDetectionCompStorage = _xMachineEntity.GetStorage<GroundDetectionCompData>();
@@ -92,7 +92,7 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.JumpComp
             _xMachineEntity.xMachine.Transition(toStateId: (int)PlayerState.Jump);
         }
 
-        public override void Disable()
+        public override void OnDestroy()
         {
         }
     }
