@@ -1,5 +1,7 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using Colyseus.Schema;
+using Cysharp.Threading.Tasks;
 using Etheron.Colyseus;
+using Etheron.Colyseus.Schemas;
 using Etheron.UI.ToolkitBase;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -8,6 +10,7 @@ namespace Etheron.UI.Controllers
     [CreateAssetMenu(menuName = "UI Toolkit/Controllers/ColyseusTestController")]
     public class ColyseusTestControllerAsset : UIControllerAssetBase
     {
+        private StateCallbackStrategy<SandboxRoomState> callbacks;
         private Button joinRoomButton;
         private Button loginButton;
 
@@ -20,9 +23,33 @@ namespace Etheron.UI.Controllers
             if (loginButton != null) loginButton.clicked += OnLoginClicked;
             if (joinRoomButton != null) joinRoomButton.clicked += OnJoinRoomClicked;
         }
-        private void OnJoinRoomClicked()
+        private async void OnJoinRoomClicked()
         {
-            ColyseusManager.Instance.client.JoinOrCreate<ColyseusSchema.SandboxRoomState>(roomName: "sandbox");
+            Debug.Log(message: "OnJoinRoomClicked");
+            var room = await ColyseusManager.Instance.client.JoinOrCreate<SandboxRoomState>(roomName: "sandbox");
+
+            // get state callbacks handler
+            if (callbacks == null)
+            {
+                room.OnMessage<string>(type: "player_left", handler: message =>
+                {
+                    Debug.Log(message: message);
+                });
+
+                callbacks = Callbacks.Get(room: room);
+
+                callbacks.OnAdd(propertyExpression: state => state.players, handler: (sessionId, player) =>
+                {
+                    // ...
+                    Debug.Log(message: "entity added id " + player.id + " sessionId " + sessionId);
+
+                    callbacks.Listen(instance: player, propertyExpression: entity => entity.position, handler: (currentPos, _) =>
+                    {
+                        Debug.Log(message: "player " + sessionId + "changed position to " + currentPos.x);
+                    });
+                });
+            }
+
         }
 
         public override void Cleanup()
