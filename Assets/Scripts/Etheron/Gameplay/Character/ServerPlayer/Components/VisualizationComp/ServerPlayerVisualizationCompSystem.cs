@@ -10,8 +10,8 @@ namespace Etheron.Gameplay.Character.ServerPlayer.Components.VisualizationComp
     public class ServerPlayerVisualizationCompSystem : XCompSystem
     {
         private static readonly int AnimatorStateHash = Animator.StringToHash(name: "State");
-        private Animator _animator;
 
+        private Animator _animator;
         private ColyseusManager _colyseusManager;
 
         // ===== INTERPOLATION STATE =====
@@ -22,10 +22,18 @@ namespace Etheron.Gameplay.Character.ServerPlayer.Components.VisualizationComp
         private bool _isLerping;
 
         private bool _isRunning;
+        private int _nextAnimatorState = -1;
+
+        // ===== NEW FACING & ANIMATION STATE =====
+        private Vector3 _nextFacingDirection = Vector3.forward;
 
         // ===== PENDING NEXT TARGET =====
         private Vector3 _pendingTarget;
         private float _pendingTimestamp;
+        private int _previousAnimationState = -1;
+
+        // ===== LAST APPLIED STATE =====
+        private Quaternion _previousRotation;
         private float _startTime;
         private float _startTimestamp;
 
@@ -42,6 +50,9 @@ namespace Etheron.Gameplay.Character.ServerPlayer.Components.VisualizationComp
             _transform = GetComponent<Transform>();
             _animator = _xMachineEntity.GetComponentInChildren<Animator>();
             _isRunning = true;
+
+            _previousRotation = _transform.rotation;
+            _previousAnimationState = -1;
 
             int interval = _storage.Get().updateIntervalMs;
             SyncLoop(interval: interval).Forget();
@@ -79,7 +90,6 @@ namespace Etheron.Gameplay.Character.ServerPlayer.Components.VisualizationComp
 
                         if (_startTimestamp == 0f)
                         {
-                            // Lần đầu tiên nhận gói → gán trực tiếp
                             _transform.position = serverPos;
                             _currentLerpStart = serverPos;
                             _currentLerpTarget = serverPos;
@@ -91,21 +101,19 @@ namespace Etheron.Gameplay.Character.ServerPlayer.Components.VisualizationComp
                         }
                         else if (serverTimestamp > _endTimestamp)
                         {
-                            // Cập nhật target tiếp theo
                             _pendingTarget = serverPos;
                             _pendingTimestamp = serverTimestamp;
                             _hasPendingTarget = true;
                         }
 
-                        // Facing direction & animation luôn cập nhật ngay lập tức
-                        Vector3 facingDirection = new Vector3(
+                        // Lưu lại hướng và animation cho Update xử lý sau
+                        _nextFacingDirection = new Vector3(
                             x: playerState.facingDirection.x,
                             y: playerState.facingDirection.y,
                             z: playerState.facingDirection.z
                         );
 
-                        _xMachineEntity.transform.rotation = Quaternion.LookRotation(forward: facingDirection, upwards: Vector3.up);
-                        _animator.SetInteger(id: AnimatorStateHash, value: playerState.visualization.state);
+                        _nextAnimatorState = playerState.visualization.state;
                     }
 
                     await UniTask.Delay(millisecondsDelay: interval);
@@ -137,17 +145,29 @@ namespace Etheron.Gameplay.Character.ServerPlayer.Components.VisualizationComp
 
             _transform.position = Vector3.Lerp(a: _currentLerpStart, b: _currentLerpTarget, t: t);
 
+            // Rotation update nếu cần
+            Quaternion targetRotation = Quaternion.LookRotation(forward: _nextFacingDirection.normalized, upwards: Vector3.up);
+            if (_previousRotation != targetRotation)
+            {
+                _xMachineEntity.transform.rotation = targetRotation;
+                _previousRotation = targetRotation;
+            }
+
+            // Animator update nếu khác
+            if (_previousAnimationState != _nextAnimatorState)
+            {
+                _animator.SetInteger(id: AnimatorStateHash, value: _nextAnimatorState);
+                _previousAnimationState = _nextAnimatorState;
+            }
+
             if (t >= 1f)
             {
                 _transform.position = _currentLerpTarget;
                 _isLerping = false;
 
-                // Nếu có target mới → bắt đầu luôn (không đợi frame sau)
                 if (_hasPendingTarget)
                 {
                     StartLerpToPending();
-
-                    // Tính lại và Lerp luôn để tránh khựng
                     float retryElapsed = Time.time - _startTime;
                     float retryDuration = Mathf.Max(a: _endTimestamp - _startTimestamp, b: 0.001f);
                     float retryT = Mathf.Clamp01(value: retryElapsed / retryDuration);
@@ -155,8 +175,8 @@ namespace Etheron.Gameplay.Character.ServerPlayer.Components.VisualizationComp
                 }
             }
 
-            Debug.DrawLine(_currentLerpStart, _currentLerpTarget, Color.green);
-            Debug.DrawRay(_transform.position, Vector3.up * 0.5f, Color.yellow);
+            Debug.DrawLine(start: _currentLerpStart, end: _currentLerpTarget, color: Color.green);
+            Debug.DrawRay(start: _transform.position, dir: Vector3.up * 0.5f, color: Color.yellow);
         }
 
         private void StartLerpToPending()

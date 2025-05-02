@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a7202ed338b4a1ea52f8cbf98d8d922, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  updateIntervalMs: 50
+  updateIntervalMs: 200
 --- !u!1001 &3069743524917880118
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -321,7 +321,11 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: df0e548ef1841b946ad9d3a813aba8a6, type: 2}
     - target: {fileID: 5866666021909216657, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
       propertyPath: m_UpdateMode
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_CullingMode
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
       propertyPath: m_ApplyRootMotion
