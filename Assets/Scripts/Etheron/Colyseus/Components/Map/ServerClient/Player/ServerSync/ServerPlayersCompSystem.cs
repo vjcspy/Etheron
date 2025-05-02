@@ -53,7 +53,7 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerSync
                 {
                     // if (sessionId == _colyseusManager.currentMapRoom.SessionId)
                     // {
-                    //     Debug.Log(message: "[ServerPlayersCompSystem] Skip adding self player");
+                    //     ELogger.Log(message: "[ServerPlayersCompSystem] Skip adding self player");
                     //     return;
                     // }
 

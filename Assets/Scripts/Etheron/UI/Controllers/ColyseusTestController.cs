@@ -44,7 +44,7 @@ namespace Etheron.UI.Controllers
         }
         private void OnLoginClicked()
         {
-            ColyseusManager.Instance.SignInAsync(email: "test2@gmail.com", password: "test123456").Forget();
+            ColyseusManager.Instance.SignInAsync(email: "test1@gmail.com", password: "test123456").Forget();
         }
     }
 }

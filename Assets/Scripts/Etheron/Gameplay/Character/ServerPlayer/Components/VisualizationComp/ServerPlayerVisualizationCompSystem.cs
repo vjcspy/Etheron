@@ -2,8 +2,6 @@
 using Etheron.Colyseus;
 using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
-using Etheron.Utils;
-using System;
 using UnityEngine;
 namespace Etheron.Gameplay.Character.ServerPlayer.Components.VisualizationComp
 {
@@ -16,25 +14,20 @@ namespace Etheron.Gameplay.Character.ServerPlayer.Components.VisualizationComp
 
         // ===== INTERPOLATION STATE =====
         private Vector3 _currentLerpStart;
-        private Vector3 _currentLerpTarget;
+
+        private InterpolationTarget _currentTarget;
         private float _endTimestamp;
-        private bool _hasPendingTarget;
         private bool _isLerping;
 
+        // ===== SYNC CONTROL =====
         private bool _isRunning;
-        private int _nextAnimatorState = -1;
-
-        // ===== NEW FACING & ANIMATION STATE =====
-        private Vector3 _nextFacingDirection = Vector3.forward;
-
-        // ===== PENDING NEXT TARGET =====
-        private Vector3 _pendingTarget;
-        private float _pendingTimestamp;
+        private float _lerpTimer;
+        private InterpolationTarget _pendingTarget;
+        private bool _pendingTargetAvailable;
         private int _previousAnimationState = -1;
 
         // ===== LAST APPLIED STATE =====
         private Quaternion _previousRotation;
-        private float _startTime;
         private float _startTimestamp;
 
         // ===== COMPONENT STORAGE =====
@@ -52,7 +45,6 @@ namespace Etheron.Gameplay.Character.ServerPlayer.Components.VisualizationComp
             _isRunning = true;
 
             _previousRotation = _transform.rotation;
-            _previousAnimationState = -1;
 
             int interval = _storage.Get().updateIntervalMs;
             SyncLoop(interval: interval).Forget();
@@ -60,68 +52,55 @@ namespace Etheron.Gameplay.Character.ServerPlayer.Components.VisualizationComp
 
         private async UniTaskVoid SyncLoop(int interval)
         {
-            try
+            while (_isRunning)
             {
-                while (_isRunning)
+                if (!_storage.IsEnable() || _colyseusManager.currentMapRoom?.State?.players == null)
                 {
-                    if (!_storage.IsEnable() ||
-                        _colyseusManager.currentMapRoom?.State?.players == null)
-                    {
-                        await UniTask.Delay(millisecondsDelay: interval);
-                        continue;
-                    }
+                    await UniTask.Delay(millisecondsDelay: interval);
+                    continue;
+                }
 
-                    ServerPlayerVisualizationCompData data = _storage.Get();
-                    if (string.IsNullOrEmpty(value: data.sessionId))
-                    {
-                        await UniTask.Delay(millisecondsDelay: interval);
-                        continue;
-                    }
+                ServerPlayerVisualizationCompData data = _storage.Get();
+                if (string.IsNullOrEmpty(value: data.sessionId))
+                {
+                    await UniTask.Delay(millisecondsDelay: interval);
+                    continue;
+                }
 
-                    if (_colyseusManager.currentMapRoom.State.players.TryGetValue(key: data.sessionId, value: out Colyseus.Schemas.Player playerState))
+                if (_colyseusManager.currentMapRoom.State.players.TryGetValue(key: data.sessionId, value: out Colyseus.Schemas.Player playerState))
+                {
+                    InterpolationTarget newTarget = new InterpolationTarget
                     {
-                        Vector3 serverPos = new Vector3(
+                        position = new Vector3(
                             x: playerState.position.value.x,
                             y: playerState.position.value.y,
-                            z: playerState.position.value.z
-                        );
-
-                        float serverTimestamp = playerState.position.timestamp;
-
-                        if (_startTimestamp == 0f)
-                        {
-                            _transform.position = serverPos;
-                            _currentLerpStart = serverPos;
-                            _currentLerpTarget = serverPos;
-                            _startTimestamp = serverTimestamp;
-                            _endTimestamp = serverTimestamp;
-                            _startTime = Time.time;
-                            _isLerping = false;
-                            _hasPendingTarget = false;
-                        }
-                        else if (serverTimestamp > _endTimestamp)
-                        {
-                            _pendingTarget = serverPos;
-                            _pendingTimestamp = serverTimestamp;
-                            _hasPendingTarget = true;
-                        }
-
-                        // Lưu lại hướng và animation cho Update xử lý sau
-                        _nextFacingDirection = new Vector3(
+                            z: playerState.position.value.z),
+                        timestamp = playerState.position.timestamp,
+                        facingDirection = new Vector3(
                             x: playerState.facingDirection.x,
                             y: playerState.facingDirection.y,
-                            z: playerState.facingDirection.z
-                        );
+                            z: playerState.facingDirection.z),
+                        animationState = playerState.visualization.state
+                    };
 
-                        _nextAnimatorState = playerState.visualization.state;
+                    if (_startTimestamp == 0f)
+                    {
+                        _transform.position = newTarget.position;
+                        _currentLerpStart = newTarget.position;
+                        _currentTarget = newTarget;
+                        _startTimestamp = newTarget.timestamp;
+                        _endTimestamp = newTarget.timestamp;
+                        _isLerping = false;
+                        _pendingTargetAvailable = false;
                     }
-
-                    await UniTask.Delay(millisecondsDelay: interval);
+                    else if (newTarget.timestamp > _endTimestamp)
+                    {
+                        _pendingTarget = newTarget;
+                        _pendingTargetAvailable = true;
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                ELogger.LogError(message: $"[ServerPlayerVisualizationCompSystem] SyncLoop exception: {ex.Message}");
+
+                await UniTask.Delay(millisecondsDelay: interval);
             }
         }
 
@@ -129,71 +108,75 @@ namespace Etheron.Gameplay.Character.ServerPlayer.Components.VisualizationComp
         {
             if (!_isLerping)
             {
-                if (_hasPendingTarget)
+                if (_pendingTargetAvailable)
                 {
-                    StartLerpToPending();
+                    BeginLerpTo(target: _pendingTarget);
                 }
-                else
-                {
-                    return;
-                }
+                else return;
             }
 
-            float elapsed = Time.time - _startTime;
             float duration = Mathf.Max(a: _endTimestamp - _startTimestamp, b: 0.001f);
-            float t = Mathf.Clamp01(value: elapsed / duration);
+            _lerpTimer += Time.deltaTime;
+            float t = Mathf.Clamp01(value: _lerpTimer / duration);
 
-            _transform.position = Vector3.Lerp(a: _currentLerpStart, b: _currentLerpTarget, t: t);
+            _transform.position = Vector3.Lerp(a: _currentLerpStart, b: _currentTarget.position, t: t);
 
-            // Rotation update nếu cần
-            Quaternion targetRotation = Quaternion.LookRotation(forward: _nextFacingDirection.normalized, upwards: Vector3.up);
+            if (t >= 1f)
+            {
+                ApplyCurrentTargetState();
+                _transform.position = _currentTarget.position;
+
+                _isLerping = false;
+                _lerpTimer = 0f;
+
+                if (_pendingTargetAvailable)
+                {
+                    BeginLerpTo(target: _pendingTarget);
+                }
+            }
+        }
+
+        private void BeginLerpTo(InterpolationTarget target)
+        {
+            _currentLerpStart = _transform.position;
+            _startTimestamp = _endTimestamp;
+            _endTimestamp = target.timestamp;
+
+            _currentTarget = target;
+            _isLerping = true;
+            _pendingTargetAvailable = false;
+        }
+
+        private void ApplyCurrentTargetState()
+        {
+            // Cập nhật rotation
+            Quaternion targetRotation = Quaternion.LookRotation(forward: _currentTarget.facingDirection.normalized, upwards: Vector3.up);
             if (_previousRotation != targetRotation)
             {
                 _xMachineEntity.transform.rotation = targetRotation;
                 _previousRotation = targetRotation;
             }
 
-            // Animator update nếu khác
-            if (_previousAnimationState != _nextAnimatorState)
+            // Cập nhật animator
+            if (_previousAnimationState != _currentTarget.animationState)
             {
-                _animator.SetInteger(id: AnimatorStateHash, value: _nextAnimatorState);
-                _previousAnimationState = _nextAnimatorState;
+                _animator.SetInteger(id: AnimatorStateHash, value: _currentTarget.animationState);
+                _previousAnimationState = _currentTarget.animationState;
             }
-
-            if (t >= 1f)
-            {
-                _transform.position = _currentLerpTarget;
-                _isLerping = false;
-
-                if (_hasPendingTarget)
-                {
-                    StartLerpToPending();
-                    float retryElapsed = Time.time - _startTime;
-                    float retryDuration = Mathf.Max(a: _endTimestamp - _startTimestamp, b: 0.001f);
-                    float retryT = Mathf.Clamp01(value: retryElapsed / retryDuration);
-                    _transform.position = Vector3.Lerp(a: _currentLerpStart, b: _currentLerpTarget, t: retryT);
-                }
-            }
-
-            Debug.DrawLine(start: _currentLerpStart, end: _currentLerpTarget, color: Color.green);
-            Debug.DrawRay(start: _transform.position, dir: Vector3.up * 0.5f, color: Color.yellow);
-        }
-
-        private void StartLerpToPending()
-        {
-            _currentLerpStart = _transform.position;
-            _currentLerpTarget = _pendingTarget;
-            _startTimestamp = _endTimestamp;
-            _endTimestamp = _pendingTimestamp;
-            _startTime = Time.time;
-
-            _hasPendingTarget = false;
-            _isLerping = true;
         }
 
         public override void OnDestroy()
         {
             _isRunning = false;
+        }
+
+        // ===== INTERPOLATION TARGET PACKAGE =====
+        private struct InterpolationTarget
+        {
+            public Vector3 position;
+            public float timestamp;
+            public Vector3 facingDirection;
+            public int animationState;
         }
     }
 }
