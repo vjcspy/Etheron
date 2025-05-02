@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a7202ed338b4a1ea52f8cbf98d8d922, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  updateIntervalMs: 100
+  updateIntervalMs: 50
 --- !u!1001 &3069743524917880118
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -67,6 +67,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2296049128955631767}
     m_Modifications:
+    - target: {fileID: -8831302708296784069, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_RayTracingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8831302708296784069, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8831302708296784069, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -107,9 +119,201 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7782456666745997465, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_RayTracingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7782456666745997465, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7782456666745997465, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -6912085080125379721, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_RayTracingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -6912085080125379721, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -6912085080125379721, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5768309987621488184, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_RayTracingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5768309987621488184, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5768309987621488184, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5479998828992311833, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_RayTracingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5479998828992311833, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5479998828992311833, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5391822912880859791, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_RayTracingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5391822912880859791, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5391822912880859791, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5014799237027920480, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_RayTracingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5014799237027920480, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5014799237027920480, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5010509858466239160, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_RayTracingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5010509858466239160, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5010509858466239160, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4747917413154575537, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_RayTracingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4747917413154575537, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4747917413154575537, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4348535977877345830, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_RayTracingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4348535977877345830, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4348535977877345830, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2391157022848663242, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_RayTracingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2391157022848663242, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2391157022848663242, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2343015760293593700, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_RayTracingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2343015760293593700, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2343015760293593700, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -986305868813852189, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_RayTracingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -986305868813852189, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -986305868813852189, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 136908490958511542, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_RayTracingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 136908490958511542, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 136908490958511542, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
       propertyPath: m_Name
       value: catgirl_fixed_rig
+      objectReference: {fileID: 0}
+    - target: {fileID: 2225727508320081053, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_RayTracingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2225727508320081053, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2225727508320081053, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3152848262345445518, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_RayTracingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3152848262345445518, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3152848262345445518, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4349590061063794122, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_RayTracingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4349590061063794122, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4349590061063794122, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
       propertyPath: m_Controller
@@ -121,6 +325,42 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
       propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7166385019872848537, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_RayTracingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7166385019872848537, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7166385019872848537, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8973395753036335677, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_RayTracingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8973395753036335677, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8973395753036335677, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9114388240146172601, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_RayTracingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9114388240146172601, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9114388240146172601, guid: 285b363e76cfbbd4ea0b6ccf429c6fc1, type: 3}
+      propertyPath: m_SkinnedMotionVectors
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

@@ -8,7 +8,6 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.VisualizationComp
     public class VisualizationCompSystem : XCompSystem
     {
         private static readonly int AnimatorStateHash = Animator.StringToHash(name: "State");
-        private static readonly int AnimatorYVelocityHash = Animator.StringToHash(name: "YVelocity");
 
         private Animator _animator;
         private Quaternion _cachedFacingRotation = Quaternion.identity;
@@ -104,14 +103,6 @@ namespace Etheron.Gameplay.Character.Player.Common.Components.VisualizationComp
             }
 
             return false;
-        }
-
-        private void UpdateYVelocityIfAir()
-        {
-            if (_currentAnimationState == (int)PlayerAnimationStateParam.Jump)
-            {
-                _animator.SetFloat(id: AnimatorYVelocityHash, value: _rb.linearVelocity.y);
-            }
         }
 
         private bool UpdateFacingDirection(ref VisualizationCompData data)
