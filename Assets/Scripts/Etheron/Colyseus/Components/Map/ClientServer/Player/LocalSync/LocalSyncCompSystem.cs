@@ -53,9 +53,13 @@ namespace Etheron.Colyseus.Components.Map.ClientServer.Player.LocalSync
                     {
                         await _colyseusManager.currentMapRoom.Send(type: "local_sync", message: new
                         {
-                            position.x,
-                            position.y,
-                            position.z,
+                            position = new
+                            {
+                                position.x,
+                                position.y,
+                                position.z,
+                                timestamp = Time.time
+                            },
                             facingDirection = new
                             {
                                 visualizationComp.facingDirection.x,

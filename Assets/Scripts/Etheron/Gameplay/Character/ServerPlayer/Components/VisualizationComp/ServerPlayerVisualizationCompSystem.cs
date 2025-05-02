@@ -4,21 +4,32 @@ using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
 using Etheron.Utils;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 namespace Etheron.Gameplay.Character.ServerPlayer.Components.VisualizationComp
 {
     public class ServerPlayerVisualizationCompSystem : XCompSystem
     {
         private static readonly int AnimatorStateHash = Animator.StringToHash(name: "State");
-        private readonly float _interpolationBackTime = 0.1f; // 100ms
-        private readonly int _maxBufferSize = 30;
-
-        private readonly List<(Vector3 pos, float time)> _positionBuffer = new List<(Vector3 pos, float time)>();
         private Animator _animator;
+
         private ColyseusManager _colyseusManager;
+
+        // ===== INTERPOLATION STATE =====
+        private Vector3 _currentLerpStart;
+        private Vector3 _currentLerpTarget;
+        private float _endTimestamp;
+        private bool _hasPendingTarget;
+        private bool _isLerping;
+
         private bool _isRunning;
-        private Vector3 _lastServerPosition;
+
+        // ===== PENDING NEXT TARGET =====
+        private Vector3 _pendingTarget;
+        private float _pendingTimestamp;
+        private float _startTime;
+        private float _startTimestamp;
+
+        // ===== COMPONENT STORAGE =====
         private XCompStorage<ServerPlayerVisualizationCompData> _storage;
         private Transform _transform;
 
@@ -59,25 +70,42 @@ namespace Etheron.Gameplay.Character.ServerPlayer.Components.VisualizationComp
                     if (_colyseusManager.currentMapRoom.State.players.TryGetValue(key: data.sessionId, value: out Colyseus.Schemas.Player playerState))
                     {
                         Vector3 serverPos = new Vector3(
-                            x: playerState.position.x,
-                            y: playerState.position.y,
-                            z: playerState.position.z
+                            x: playerState.position.value.x,
+                            y: playerState.position.value.y,
+                            z: playerState.position.value.z
                         );
+
+                        float serverTimestamp = playerState.position.timestamp;
+
+                        if (_startTimestamp == 0f)
+                        {
+                            // Lần đầu tiên nhận gói → gán trực tiếp
+                            _transform.position = serverPos;
+                            _currentLerpStart = serverPos;
+                            _currentLerpTarget = serverPos;
+                            _startTimestamp = serverTimestamp;
+                            _endTimestamp = serverTimestamp;
+                            _startTime = Time.time;
+                            _isLerping = false;
+                            _hasPendingTarget = false;
+                        }
+                        else if (serverTimestamp > _endTimestamp)
+                        {
+                            // Cập nhật target tiếp theo
+                            _pendingTarget = serverPos;
+                            _pendingTimestamp = serverTimestamp;
+                            _hasPendingTarget = true;
+                        }
+
+                        // Facing direction & animation luôn cập nhật ngay lập tức
                         Vector3 facingDirection = new Vector3(
                             x: playerState.facingDirection.x,
                             y: playerState.facingDirection.y,
-                            z: playerState.facingDirection.z);
+                            z: playerState.facingDirection.z
+                        );
 
                         _xMachineEntity.transform.rotation = Quaternion.LookRotation(forward: facingDirection, upwards: Vector3.up);
                         _animator.SetInteger(id: AnimatorStateHash, value: playerState.visualization.state);
-                        _lastServerPosition = serverPos;
-                        _positionBuffer.Add(item: (serverPos, Time.time));
-
-                        // Giới hạn kích thước buffer
-                        if (_positionBuffer.Count > _maxBufferSize)
-                        {
-                            _positionBuffer.RemoveAt(index: 0);
-                        }
                     }
 
                     await UniTask.Delay(millisecondsDelay: interval);
@@ -91,31 +119,56 @@ namespace Etheron.Gameplay.Character.ServerPlayer.Components.VisualizationComp
 
         public override void Update()
         {
-            float renderTime = Time.time - _interpolationBackTime;
-
-            if (_positionBuffer.Count < 2)
+            if (!_isLerping)
             {
-                // Fallback nếu không có đủ data để nội suy
-                _transform.position = Vector3.Lerp(a: _transform.position, b: _lastServerPosition, t: 0.1f);
-                return;
-            }
-
-            for (int i = 0; i < _positionBuffer.Count - 1; i++)
-            {
-                (Vector3 pos, float time) older = _positionBuffer[index: i];
-                (Vector3 pos, float time) newer = _positionBuffer[index: i + 1];
-
-                if (older.time <= renderTime && newer.time >= renderTime)
+                if (_hasPendingTarget)
                 {
-                    float t = Mathf.InverseLerp(a: older.time, b: newer.time, value: renderTime);
-                    Vector3 interpolated = Vector3.Lerp(a: older.pos, b: newer.pos, t: t);
-                    _transform.position = interpolated;
+                    StartLerpToPending();
+                }
+                else
+                {
                     return;
                 }
             }
 
-            // Nếu không có frame nào phù hợp (client bị trễ), move nhẹ về last known position
-            _transform.position = Vector3.Lerp(a: _transform.position, b: _lastServerPosition, t: 0.1f);
+            float elapsed = Time.time - _startTime;
+            float duration = Mathf.Max(a: _endTimestamp - _startTimestamp, b: 0.001f);
+            float t = Mathf.Clamp01(value: elapsed / duration);
+
+            _transform.position = Vector3.Lerp(a: _currentLerpStart, b: _currentLerpTarget, t: t);
+
+            if (t >= 1f)
+            {
+                _transform.position = _currentLerpTarget;
+                _isLerping = false;
+
+                // Nếu có target mới → bắt đầu luôn (không đợi frame sau)
+                if (_hasPendingTarget)
+                {
+                    StartLerpToPending();
+
+                    // Tính lại và Lerp luôn để tránh khựng
+                    float retryElapsed = Time.time - _startTime;
+                    float retryDuration = Mathf.Max(a: _endTimestamp - _startTimestamp, b: 0.001f);
+                    float retryT = Mathf.Clamp01(value: retryElapsed / retryDuration);
+                    _transform.position = Vector3.Lerp(a: _currentLerpStart, b: _currentLerpTarget, t: retryT);
+                }
+            }
+
+            Debug.DrawLine(_currentLerpStart, _currentLerpTarget, Color.green);
+            Debug.DrawRay(_transform.position, Vector3.up * 0.5f, Color.yellow);
+        }
+
+        private void StartLerpToPending()
+        {
+            _currentLerpStart = _transform.position;
+            _currentLerpTarget = _pendingTarget;
+            _startTimestamp = _endTimestamp;
+            _endTimestamp = _pendingTimestamp;
+            _startTime = Time.time;
+
+            _hasPendingTarget = false;
+            _isLerping = true;
         }
 
         public override void OnDestroy()

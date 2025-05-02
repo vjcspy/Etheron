@@ -19,8 +19,8 @@ public Player() { }
 		[Type(0, "string")]
 		public string id = default(string);
 
-		[Type(1, "ref", typeof(Vector3))]
-		public Vector3 position = null;
+		[Type(1, "ref", typeof(Position))]
+		public Position position = null;
 
 		[Type(2, "ref", typeof(Vector3))]
 		public Vector3 facingDirection = null;

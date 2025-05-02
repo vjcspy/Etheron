@@ -184,7 +184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93fe45d6cc114611b3c937d39905bc84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncIntervalMs: 50
+  syncIntervalMs: 200
 --- !u!1001 &2768172370744092782
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -543,7 +543,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 996278617261759982, guid: ace7d8d212358e74080d73ac95198c38, type: 3}
       propertyPath: syncIntervalMs
-      value: 50
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 8481140593466036460, guid: ace7d8d212358e74080d73ac95198c38, type: 3}
       propertyPath: m_Name
