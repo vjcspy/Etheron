@@ -22,7 +22,10 @@ public Player() { }
 		[Type(1, "ref", typeof(Vector3))]
 		public Vector3 position = null;
 
-		[Type(2, "ref", typeof(PlayerVisualization))]
+		[Type(2, "ref", typeof(Vector3))]
+		public Vector3 facingDirection = null;
+
+		[Type(3, "ref", typeof(PlayerVisualization))]
 		public PlayerVisualization visualization = null;
 	}
 }

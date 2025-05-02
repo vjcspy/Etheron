@@ -11,6 +11,7 @@ namespace Etheron.Colyseus
         [SerializeField] private string serverEndpoint = "ws://localhost:2567";
         private bool _isLoggedIn;
         public ColyseusRoom<MapV1State> currentMapRoom { get; private set; }
+
         public ColyseusClient client { get; private set; }
         public static ColyseusManager Instance { get; private set; }
         private void Awake()

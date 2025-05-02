@@ -62,6 +62,11 @@ namespace Etheron.Core.XComponent
         {
             return _xMachineEntity.GetOrCreateStorage<T>();
         }
+
+        protected T GetComponent<T>()
+        {
+            return _xMachineEntity.GetComponent<T>();
+        }
     }
 
     [RequireComponent(requiredComponent: typeof(XMachineEntity))]

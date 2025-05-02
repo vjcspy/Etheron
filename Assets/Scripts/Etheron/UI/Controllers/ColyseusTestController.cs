@@ -23,7 +23,7 @@ namespace Etheron.UI.Controllers
             if (loginButton != null) loginButton.clicked += OnLoginClicked;
             if (joinRoomButton != null) joinRoomButton.clicked += OnJoinRoomClicked;
         }
-        private async void OnJoinRoomClicked()
+        private void OnJoinRoomClicked()
         {
             Debug.Log(message: "OnJoinRoomClicked");
             ColyseusManager.Instance.EnterMapV1(mapId: "sandbox").Forget();
