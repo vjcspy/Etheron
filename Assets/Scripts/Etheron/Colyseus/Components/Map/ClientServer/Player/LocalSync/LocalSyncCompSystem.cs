@@ -47,15 +47,15 @@ namespace Etheron.Colyseus.Components.Map.ClientServer.Player.LocalSync
                 if (_localSyncCompStorage.IsEnable())
                 {
                     VisualizationCompData visualizationComp = _visualizationCompStorage.Get();
-                    Vector3 velocity = _rb.linearVelocity;
+                    Vector3 position = _rb.transform.position;
 
                     if (_colyseusManager.currentMapRoom != null)
                     {
                         await _colyseusManager.currentMapRoom.Send(type: "local_sync", message: new
                         {
-                            velocity.x,
-                            velocity.y,
-                            velocity.z,
+                            position.x,
+                            position.y,
+                            position.z,
                             facingDirection = new
                             {
                                 visualizationComp.facingDirection.x,

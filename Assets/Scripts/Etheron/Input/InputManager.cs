@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+﻿using Etheron.Core.Manager;
 namespace Etheron.Input
 {
-    public class InputManager : MonoBehaviour
+    public class InputManager : ManagerBase
     {
         public static InputManager Instance { get; private set; }
         public InputSystem_Actions InputActions { get; private set; }
@@ -10,13 +10,12 @@ namespace Etheron.Input
         {
             if (Instance != null && Instance != this)
             {
-                Destroy(gameObject);
+                Destroy(obj: gameObject);
                 return;
             }
 
             Instance = this;
             InputActions = new InputSystem_Actions();
-            // DontDestroyOnLoad(gameObject);
         }
     }
 }

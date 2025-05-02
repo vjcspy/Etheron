@@ -1,4 +1,5 @@
 ﻿using Etheron.Core.XMachine;
+using Etheron.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -99,7 +100,7 @@ namespace Etheron.Core.XComponent
 
     public abstract class XEntity : MonoBehaviour
     {
-        private readonly Dictionary<Type, object> _components = new Dictionary<Type, object>();
+        private readonly Dictionary<Type, object> _storages = new Dictionary<Type, object>();
         private readonly XCompSystemArray _xCompSystems = new XCompSystemArray();
 
         #region Component Storage
@@ -107,25 +108,28 @@ namespace Etheron.Core.XComponent
         public void AddComponentData<T>(T component) where T : struct
         {
             Type type = typeof(T);
-            if (!_components.TryGetValue(key: type, value: out object storageObj))
+            if (!_storages.TryGetValue(key: type, value: out object storageObj))
             {
                 var newStorage = new XCompStorage<T>(value: component);
                 newStorage.Enable();
-                _components[key: type] = newStorage;
+                _storages[key: type] = newStorage;
             }
             else
             {
-                ((XCompStorage<T>)storageObj).Enable();
+                var storage = (XCompStorage<T>)storageObj;
+                T merged = StructMerger.Merge(primary: storage.Get(), secondary: component);
+                storage.Set(value: merged);
+                storage.Enable();
             }
         }
 
         public XCompStorage<T> GetOrCreateStorage<T>() where T : struct
         {
             Type type = typeof(T);
-            if (!_components.TryGetValue(key: type, value: out object storageObj))
+            if (!_storages.TryGetValue(key: type, value: out object storageObj))
             {
                 var newStorage = new XCompStorage<T>();
-                _components[key: type] = newStorage;
+                _storages[key: type] = newStorage;
                 return newStorage;
             }
 
@@ -140,7 +144,7 @@ namespace Etheron.Core.XComponent
         public bool HasComponent<T>() where T : struct
         {
             Type type = typeof(T);
-            if (_components.TryGetValue(key: type, value: out object storageObj))
+            if (_storages.TryGetValue(key: type, value: out object storageObj))
             {
                 return ((XCompStorage<T>)storageObj).IsEnable();
             }
@@ -150,7 +154,7 @@ namespace Etheron.Core.XComponent
         public void DisableComponent<T>() where T : struct
         {
             Type type = typeof(T);
-            if (_components.TryGetValue(key: type, value: out object storageObj))
+            if (_storages.TryGetValue(key: type, value: out object storageObj))
             {
                 ((XCompStorage<T>)storageObj).Disable();
             }
@@ -158,7 +162,7 @@ namespace Etheron.Core.XComponent
         public void EnableComponent<T>() where T : struct
         {
             Type type = typeof(T);
-            if (_components.TryGetValue(key: type, value: out object storageObj))
+            if (_storages.TryGetValue(key: type, value: out object storageObj))
             {
                 ((XCompStorage<T>)storageObj).Enable();
             }
@@ -198,7 +202,7 @@ namespace Etheron.Core.XComponent
 
         public IEnumerable<object> GetAllComponents()
         {
-            return _components.Values;
+            return _storages.Values;
         }
         public void AddSystem(XCompSystem system)
         {

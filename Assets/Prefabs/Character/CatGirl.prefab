@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   checkType: 1
-  checkDistance: 0.56
+  checkDistance: 0.6
   sphereRadius: 0.2
   checkOffset: {x: 0, y: 0, z: 0}
   groundLayer:

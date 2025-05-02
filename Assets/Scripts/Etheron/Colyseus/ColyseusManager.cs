@@ -1,15 +1,20 @@
 ﻿using Colyseus;
+using Colyseus.Schema;
 using Cysharp.Threading.Tasks;
 using Etheron.Colyseus.Schemas;
+using Etheron.Core.Manager;
 using System;
 using UnityEngine;
 namespace Etheron.Colyseus
 {
-    public class ColyseusManager : MonoBehaviour
+    public class ColyseusManager : ManagerBase
     {
 
         [SerializeField] private string serverEndpoint = "ws://localhost:2567";
         private bool _isLoggedIn;
+        private string _lastMapId;
+        private bool _needsReconnect;
+        public StateCallbackStrategy<MapV1State> currentMapRoomCallback { get; private set; }
         public ColyseusRoom<MapV1State> currentMapRoom { get; private set; }
 
         public ColyseusClient client { get; private set; }
@@ -22,7 +27,6 @@ namespace Etheron.Colyseus
                 return;
             }
             Instance = this;
-            // DontDestroyOnLoad(target: gameObject);
 
             client = new ColyseusClient(endpoint: serverEndpoint);
         }
@@ -55,10 +59,12 @@ namespace Etheron.Colyseus
 
         public async UniTask EnterMapV1(string mapId)
         {
+            _lastMapId = mapId;
             if (currentMapRoom != null)
             {
                 Debug.Log(message: "[ColyseusManager.EnterMap] Leaving current map before entering a new one");
                 await currentMapRoom.Leave();
+                CleanupCurrentMapRoom();
             }
 
             try
@@ -66,8 +72,9 @@ namespace Etheron.Colyseus
                 ColyseusMatchMakeResponse reservation = await client.Http.Get<ColyseusMatchMakeResponse>(uriPath: "map-maker/enter?mapId=" + mapId);
                 Debug.Log(message: "[ColyseusManager.EnterMap] Got reservation");
                 currentMapRoom = await client.ConsumeSeatReservation<MapV1State>(response: reservation);
+                currentMapRoomCallback = Callbacks.Get(room: currentMapRoom);
                 Debug.Log(message: "[ColyseusManager.EnterMap] joined map successfully");
-
+                RegisterRoomDisconnectEvents(room: currentMapRoom);
             }
             catch (Exception ex)
             {
@@ -79,6 +86,60 @@ namespace Etheron.Colyseus
         private void WhenLoading(bool isLoading)
         {
             Debug.Log(message: $"Loading Colyseus: {isLoading}");
+        }
+
+        private void RegisterRoomDisconnectEvents(ColyseusRoom<MapV1State> room)
+        {
+            room.OnLeave += HandleRoomLeave;
+            room.OnError += HandleRoomError;
+        }
+        private void HandleRoomError(int code, string message)
+        {
+            Debug.LogWarning(message: $"[ColyseusManager] Room error (code={code}): {message}");
+            // CleanupCurrentMapRoom();
+            // _needsReconnect = true;
+            // TryReconnectAsync().Forget();
+        }
+
+        private void HandleRoomLeave(int code)
+        {
+            Debug.LogWarning(message: $"[ColyseusManager] Room left (code={code}). Resetting state.");
+            CleanupCurrentMapRoom();
+        }
+
+        private void CleanupCurrentMapRoom()
+        {
+            currentMapRoom = null;
+            currentMapRoomCallback = null;
+        }
+
+        private async UniTaskVoid TryReconnectAsync()
+        {
+            int retryCount = 0;
+            while (_needsReconnect && retryCount < 5)
+            {
+                await UniTask.Delay(millisecondsDelay: 3000); // chờ 3 giây
+
+                Debug.Log(message: $"[Reconnect] Attempt #{retryCount + 1}");
+                try
+                {
+                    await EnterMapV1(mapId: _lastMapId); // bạn cần lưu lại mapId gần nhất
+                    _needsReconnect = false;
+                    Debug.Log(message: "[Reconnect] Success");
+                    break;
+                }
+                catch
+                {
+                    retryCount++;
+                    Debug.LogWarning(message: "[Reconnect] Failed, will retry...");
+                }
+            }
+
+            if (_needsReconnect)
+            {
+                Debug.LogError(message: "[Reconnect] All retries failed.");
+                // TODO: Show UI cho người dùng chọn reconnect thủ công
+            }
         }
     }
 }

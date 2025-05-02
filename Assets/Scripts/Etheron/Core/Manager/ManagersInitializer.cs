@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-namespace Etheron.Core
+namespace Etheron.Core.Manager
 {
     public class ManagersInitializer : MonoBehaviour
     {
