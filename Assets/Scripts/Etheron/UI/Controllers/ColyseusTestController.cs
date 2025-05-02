@@ -26,30 +26,7 @@ namespace Etheron.UI.Controllers
         private async void OnJoinRoomClicked()
         {
             Debug.Log(message: "OnJoinRoomClicked");
-            var room = await ColyseusManager.Instance.client.JoinOrCreate<MapState>(roomName: "sandbox");
-
-            // get state callbacks handler
-            if (callbacks == null)
-            {
-                room.OnMessage<string>(type: "player_left", handler: message =>
-                {
-                    Debug.Log(message: message);
-                });
-
-                callbacks = Callbacks.Get(room: room);
-
-                callbacks.OnAdd(propertyExpression: state => state.players, handler: (sessionId, player) =>
-                {
-                    // ...
-                    Debug.Log(message: "entity added id " + player.id + " sessionId " + sessionId);
-
-                    callbacks.Listen(instance: player, propertyExpression: entity => entity.position, handler: (currentPos, _) =>
-                    {
-                        Debug.Log(message: "player " + sessionId + "changed position to " + currentPos.x);
-                    });
-                });
-            }
-
+            ColyseusManager.Instance.EnterMapV1(mapId: "sandbox").Forget();
         }
 
         public override void Cleanup()
