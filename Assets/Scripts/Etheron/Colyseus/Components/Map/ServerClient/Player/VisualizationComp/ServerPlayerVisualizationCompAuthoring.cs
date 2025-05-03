@@ -1,6 +1,6 @@
 ﻿using Etheron.Core.XComponent;
 using UnityEngine;
-namespace Etheron.Gameplay.Character.ServerPlayer.Components.VisualizationComp
+namespace Etheron.Colyseus.Components.Map.ServerClient.Player.VisualizationComp
 {
     public class ServerPlayerVisualizationCompAuthoring : XCompAuthoring
     {

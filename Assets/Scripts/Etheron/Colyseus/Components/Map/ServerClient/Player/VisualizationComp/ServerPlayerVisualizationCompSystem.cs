@@ -1,9 +1,8 @@
 ﻿using Cysharp.Threading.Tasks;
-using Etheron.Colyseus;
 using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
 using UnityEngine;
-namespace Etheron.Gameplay.Character.ServerPlayer.Components.VisualizationComp
+namespace Etheron.Colyseus.Components.Map.ServerClient.Player.VisualizationComp
 {
     public class ServerPlayerVisualizationCompSystem : XCompSystem
     {

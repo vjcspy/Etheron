@@ -12,3 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a37474f4a47d4b7a8ca5713a149dc7ac, type: 3}
   m_Name: ColyseusTestController
   m_EditorClassIdentifier: 
+  mapId: sandbox
+  email: test2@gmail.com

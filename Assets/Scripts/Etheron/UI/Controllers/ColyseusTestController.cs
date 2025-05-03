@@ -10,6 +10,9 @@ namespace Etheron.UI.Controllers
     [CreateAssetMenu(menuName = "UI Toolkit/Controllers/ColyseusTestController")]
     public class ColyseusTestControllerAsset : UIControllerAssetBase
     {
+        [SerializeField] private string mapId = "sandbox";
+        [SerializeField] private string email = "test1@gmail.com";
+
         private StateCallbackStrategy<MapState> callbacks;
         private Button joinRoomButton;
         private Button loginButton;
@@ -26,7 +29,7 @@ namespace Etheron.UI.Controllers
         private void OnJoinRoomClicked()
         {
             Debug.Log(message: "OnJoinRoomClicked");
-            ColyseusManager.Instance.EnterMapV1(mapId: "sandbox").Forget();
+            ColyseusManager.Instance.EnterMapV1(mapId: mapId).Forget();
         }
 
         public override void Cleanup()
@@ -44,7 +47,7 @@ namespace Etheron.UI.Controllers
         }
         private void OnLoginClicked()
         {
-            ColyseusManager.Instance.SignInAsync(email: "test1@gmail.com", password: "test123456").Forget();
+            ColyseusManager.Instance.SignInAsync(email: email, password: "test123456").Forget();
         }
     }
 }
