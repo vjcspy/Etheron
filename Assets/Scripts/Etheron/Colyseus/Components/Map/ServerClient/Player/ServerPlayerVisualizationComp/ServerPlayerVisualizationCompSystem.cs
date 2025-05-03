@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
+using System.Collections.Generic;
 using UnityEngine;
 namespace Etheron.Colyseus.Components.Map.ServerClient.Player.VisualizationComp
 {
@@ -8,12 +9,14 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Player.VisualizationComp
     {
         private static readonly int AnimatorStateHash = Animator.StringToHash(name: "State");
 
+        // ===== INTERPOLATION BUFFER =====
+        private readonly Queue<InterpolationTarget> _interpolationBuffer = new Queue<InterpolationTarget>(capacity: 10);
+
         private Animator _animator;
         private ColyseusManager _colyseusManager;
 
         // ===== INTERPOLATION STATE =====
         private Vector3 _currentLerpStart;
-
         private InterpolationTarget _currentTarget;
         private float _endTimestamp;
         private bool _isLerping;
@@ -21,8 +24,6 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Player.VisualizationComp
         // ===== SYNC CONTROL =====
         private bool _isRunning;
         private float _lerpTimer;
-        private InterpolationTarget _pendingTarget;
-        private bool _pendingTargetAvailable;
         private int _previousAnimationState = -1;
 
         // ===== LAST APPLIED STATE =====
@@ -66,7 +67,7 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Player.VisualizationComp
                     continue;
                 }
 
-                if (_colyseusManager.currentMapRoom.State.players.TryGetValue(key: data.sessionId, value: out Colyseus.Schemas.Player playerState))
+                if (_colyseusManager.currentMapRoom.State.players.TryGetValue(key: data.sessionId, value: out Schemas.Player playerState))
                 {
                     InterpolationTarget newTarget = new InterpolationTarget
                     {
@@ -90,12 +91,15 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Player.VisualizationComp
                         _startTimestamp = newTarget.timestamp;
                         _endTimestamp = newTarget.timestamp;
                         _isLerping = false;
-                        _pendingTargetAvailable = false;
+                        _interpolationBuffer.Clear();
                     }
                     else if (newTarget.timestamp > _endTimestamp)
                     {
-                        _pendingTarget = newTarget;
-                        _pendingTargetAvailable = true;
+                        if (_interpolationBuffer.Count >= 10)
+                        {
+                            _interpolationBuffer.Dequeue(); // Loại bỏ phần tử cũ nhất nếu đầy
+                        }
+                        _interpolationBuffer.Enqueue(item: newTarget);
                     }
                 }
 
@@ -105,32 +109,27 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Player.VisualizationComp
 
         public override void Update()
         {
-            if (!_isLerping)
+            if (!_isLerping && _interpolationBuffer.Count > 0)
             {
-                if (_pendingTargetAvailable)
-                {
-                    BeginLerpTo(target: _pendingTarget);
-                }
-                else return;
+                InterpolationTarget nextTarget = _interpolationBuffer.Dequeue();
+                BeginLerpTo(target: nextTarget);
             }
 
-            float duration = Mathf.Max(a: _endTimestamp - _startTimestamp, b: 0.001f);
-            _lerpTimer += Time.deltaTime;
-            float t = Mathf.Clamp01(value: _lerpTimer / duration);
-
-            _transform.position = Vector3.Lerp(a: _currentLerpStart, b: _currentTarget.position, t: t);
-
-            if (t >= 1f)
+            if (_isLerping)
             {
-                ApplyCurrentTargetState();
-                _transform.position = _currentTarget.position;
+                float duration = Mathf.Max(a: _endTimestamp - _startTimestamp, b: 0.001f);
+                _lerpTimer += Time.deltaTime;
+                float t = Mathf.Clamp01(value: _lerpTimer / duration);
 
-                _isLerping = false;
-                _lerpTimer = 0f;
+                _transform.position = Vector3.Lerp(a: _currentLerpStart, b: _currentTarget.position, t: t);
 
-                if (_pendingTargetAvailable)
+                if (t >= 1f)
                 {
-                    BeginLerpTo(target: _pendingTarget);
+                    ApplyCurrentTargetState();
+                    _transform.position = _currentTarget.position;
+
+                    _isLerping = false;
+                    _lerpTimer = 0f;
                 }
             }
         }
@@ -143,7 +142,6 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Player.VisualizationComp
 
             _currentTarget = target;
             _isLerping = true;
-            _pendingTargetAvailable = false;
         }
 
         private void ApplyCurrentTargetState()
