@@ -22,7 +22,7 @@ public Position() { }
 		[Type(1, "ref", typeof(Vector3))]
 		public Vector3 facingDirection = null;
 
-		[Type(2, "number")]
+		[Type(2, "float32")]
 		public float timestamp = default(float);
 	}
 }
