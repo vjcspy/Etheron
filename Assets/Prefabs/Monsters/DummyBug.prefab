@@ -61,7 +61,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 92
   m_CollisionDetection: 0
 --- !u!65 &6901782016774817877
 BoxCollider:
@@ -108,7 +108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6e278abc0cc44dca7e7587dec865bb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  updateIntervalMs: 100
+  updateIntervalMs: 200
 --- !u!1001 &4331139924710475116
 PrefabInstance:
   m_ObjectHideFlags: 0
