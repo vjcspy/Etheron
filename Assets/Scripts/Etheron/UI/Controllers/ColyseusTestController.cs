@@ -13,7 +13,7 @@ namespace Etheron.UI.Controllers
         [SerializeField] private string mapId = "sandbox";
         [SerializeField] private string email = "test1@gmail.com";
 
-        private StateCallbackStrategy<MapState> callbacks;
+        private StateCallbackStrategy<MapV1State> callbacks;
         private Button joinRoomButton;
         private Button loginButton;
 

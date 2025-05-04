@@ -11,12 +11,12 @@ using UnityEngine.Scripting;
 #endif
 
 namespace Etheron.Colyseus.Schemas {
-	public partial class MapState : Schema {
+	public partial class EntityVisualization : Schema {
 #if UNITY_5_3_OR_NEWER
 [Preserve]
 #endif
-public MapState() { }
-		[Type(0, "map", typeof(MapSchema<Player>))]
-		public MapSchema<Player> players = null;
+public EntityVisualization() { }
+		[Type(0, "uint8")]
+		public byte state = default(byte);
 	}
 }

@@ -11,21 +11,11 @@ using UnityEngine.Scripting;
 #endif
 
 namespace Etheron.Colyseus.Schemas {
-	public partial class Player : Schema {
+	public partial class Player : EntityGameObject {
 #if UNITY_5_3_OR_NEWER
 [Preserve]
 #endif
 public Player() { }
-		[Type(0, "string")]
-		public string id = default(string);
 
-		[Type(1, "ref", typeof(Position))]
-		public Position position = null;
-
-		[Type(2, "ref", typeof(Vector3))]
-		public Vector3 facingDirection = null;
-
-		[Type(3, "ref", typeof(PlayerVisualization))]
-		public PlayerVisualization visualization = null;
 	}
 }

@@ -11,12 +11,15 @@ using UnityEngine.Scripting;
 #endif
 
 namespace Etheron.Colyseus.Schemas {
-	public partial class PlayerVisualization : Schema {
+	public partial class EntityGameObject : SyncObject {
 #if UNITY_5_3_OR_NEWER
 [Preserve]
 #endif
-public PlayerVisualization() { }
-		[Type(0, "uint8")]
-		public byte state = default(byte);
+public EntityGameObject() { }
+		[Type(4, "ref", typeof(EntityVisualization))]
+		public EntityVisualization visualization = null;
+
+		[Type(5, "ref", typeof(Vector3))]
+		public Vector3 facingDirection = null;
 	}
 }

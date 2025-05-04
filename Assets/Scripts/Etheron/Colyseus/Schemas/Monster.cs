@@ -11,15 +11,11 @@ using UnityEngine.Scripting;
 #endif
 
 namespace Etheron.Colyseus.Schemas {
-	public partial class MapV1State : Schema {
+	public partial class Monster : EntityGameObject {
 #if UNITY_5_3_OR_NEWER
 [Preserve]
 #endif
-public MapV1State() { }
-		[Type(0, "map", typeof(MapSchema<Player>))]
-		public MapSchema<Player> players = null;
+public Monster() { }
 
-		[Type(1, "map", typeof(MapSchema<Monster>))]
-		public MapSchema<Monster> monsters = null;
 	}
 }
