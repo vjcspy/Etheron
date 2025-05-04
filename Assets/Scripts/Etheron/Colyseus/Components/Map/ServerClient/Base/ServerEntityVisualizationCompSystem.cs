@@ -2,6 +2,8 @@
 using Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayerVisualization;
 using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
+using Etheron.Gameplay.Values;
+using Etheron.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 namespace Etheron.Colyseus.Components.Map.ServerClient.Base
@@ -9,7 +11,6 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Base
     public abstract class ServerEntityVisualizationCompSystem<TState> : XCompSystem
     {
         private const int capacity = 5;
-        private static readonly int AnimatorStateHash = Animator.StringToHash(name: "State");
 
         private readonly Queue<InterpolationTarget> _interpolationBuffer = new Queue<InterpolationTarget>(capacity: capacity);
 
@@ -49,11 +50,13 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Base
 
         private async UniTaskVoid SyncLoop(int interval)
         {
+            await UniTask.Delay(millisecondsDelay: 2000);
             while (_isRunning)
             {
                 if (!TryGetEntityState(entityState: out _cachedEntityState))
                 {
                     await UniTask.Delay(millisecondsDelay: 1000);
+                    ELogger.Log(message: "[ServerEntityVisualizationCompSystem] SyncLoop: No entity state found");
                     continue;
                 }
 
@@ -129,7 +132,7 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Base
 
             if (_previousAnimationState != _currentTarget.animationState)
             {
-                _animator.SetInteger(id: AnimatorStateHash, value: _currentTarget.animationState);
+                _animator.SetInteger(id: AnimatorHashes.State, value: _currentTarget.animationState);
                 _previousAnimationState = _currentTarget.animationState;
             }
         }

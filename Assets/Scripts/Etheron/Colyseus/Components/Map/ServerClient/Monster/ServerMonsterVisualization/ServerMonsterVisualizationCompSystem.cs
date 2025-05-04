@@ -7,22 +7,22 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Monster.ServerMonsterVisu
 {
     public class ServerMonsterVisualizationCompSystem : ServerEntityVisualizationCompSystem<Schemas.Monster>
     {
-        private readonly XCompStorage<ServerPlayerVisualizationCompData> _storage;
+        private readonly XCompStorage<ServerMonsterVisualizationCompData> _storage;
         public ServerMonsterVisualizationCompSystem(XMachineEntity xMachineEntity) : base(xMachineEntity: xMachineEntity)
         {
-            _storage = GetStorage<ServerPlayerVisualizationCompData>();
+            _storage = GetStorage<ServerMonsterVisualizationCompData>();
         }
 
         protected override bool TryGetEntityState(out Schemas.Monster entityState)
         {
-            string sessionId = _storage.Get().sessionId;
-            if (string.IsNullOrEmpty(value: sessionId))
+            string serverSyncId = _storage.Get().serverSyncId;
+            if (string.IsNullOrEmpty(value: serverSyncId))
             {
                 entityState = null;
                 return false;
             }
 
-            return _colyseusManager.currentMapRoom.State.monsters.TryGetValue(key: sessionId, value: out entityState);
+            return _colyseusManager.currentMapRoom.State.monsters.TryGetValue(key: serverSyncId, value: out entityState);
         }
 
         protected override bool TryExtractInterpolationTarget(Schemas.Monster state, out InterpolationTarget target)

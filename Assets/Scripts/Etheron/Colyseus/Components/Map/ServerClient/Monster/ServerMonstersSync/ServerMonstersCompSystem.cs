@@ -1,5 +1,6 @@
 ﻿using Colyseus.Schema;
 using Cysharp.Threading.Tasks;
+using Etheron.Colyseus.Components.Map.ServerClient.Monster.ServerMonsterVisualization;
 using Etheron.Colyseus.Schemas;
 using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
@@ -50,12 +51,12 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Monster.ServerMonstersSyn
         {
             callback.OnAdd(
                 propertyExpression: state => state.monsters,
-                handler: (sessionId, monster) =>
+                handler: (serverSyncId, monster) =>
                 {
-                    ELogger.Log(message: $"[ServerMonstersCompSystem] Monster added: {sessionId}");
+                    ELogger.Log(message: $"[ServerMonstersCompSystem] Monster added: {serverSyncId}");
 
-                    if (_monsters.ContainsKey(key: sessionId)) return;
-                    ELogger.Log(message: "[ServerMonstersCompSystem] Creating new monster GameObject with sessionId " + sessionId);
+                    if (_monsters.ContainsKey(key: serverSyncId)) return;
+                    ELogger.Log(message: "[ServerMonstersCompSystem] Creating new monster GameObject with serverSyncId " + serverSyncId);
                     GameObject monsterPrefab = _config.monsterDatabase.GetMonsterPrefab(id: monster.id);
                     if (monsterPrefab == null)
                     {
@@ -66,18 +67,18 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Monster.ServerMonstersSyn
                     XEntity xEntity = monsterGO.GetComponent<XEntity>();
                     if (xEntity != null)
                     {
-                        // xEntity.AddComponentData(component: new ServerPlayerVisualizationCompData
-                        // {
-                        //     sessionId = sessionId
-                        // });
+                        xEntity.AddComponentData(component: new ServerMonsterVisualizationCompData
+                        {
+                            serverSyncId = serverSyncId
+                        });
                     }
                     else
                     {
-                        ELogger.Log(message: "[ServerMonstersCompSystem] XEntity not found in player prefab");
+                        ELogger.Log(message: "[ServerMonstersCompSystem] XEntity not found in monster prefab");
                     }
 
-                    monsterGO.name = $"ServerMonster_{sessionId}";
-                    _monsters[key: sessionId] = monsterGO;
+                    monsterGO.name = $"ServerMonster_{serverSyncId}";
+                    _monsters[key: serverSyncId] = monsterGO;
                 }
             );
 

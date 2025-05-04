@@ -3,6 +3,6 @@
     public struct ServerMonsterVisualizationCompData
     {
         public int updateIntervalMs;
-        public string sessionId;
+        public string serverSyncId;
     }
 }
