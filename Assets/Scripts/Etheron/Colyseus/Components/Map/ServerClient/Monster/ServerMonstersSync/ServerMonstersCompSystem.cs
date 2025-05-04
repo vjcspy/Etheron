@@ -43,7 +43,7 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Monster.ServerMonstersSyn
                     break;
                 }
 
-                await UniTask.Delay(millisecondsDelay: _config.pollingIntervalMs); // Kiểm tra mỗi 100ms
+                await UniTask.Delay(millisecondsDelay: 1000);
             }
         }
         private void RegisterCallbacks(StateCallbackStrategy<MapV1State> callback)
@@ -55,7 +55,7 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Monster.ServerMonstersSyn
                     ELogger.Log(message: $"[ServerMonstersCompSystem] Monster added: {sessionId}");
 
                     if (_monsters.ContainsKey(key: sessionId)) return;
-                    ELogger.Log(message: "[ServerMonstersCompSystem] Creating new player GameObject with sessionId " + sessionId);
+                    ELogger.Log(message: "[ServerMonstersCompSystem] Creating new monster GameObject with sessionId " + sessionId);
                     GameObject monsterPrefab = _config.monsterDatabase.GetMonsterPrefab(id: monster.id);
                     if (monsterPrefab == null)
                     {

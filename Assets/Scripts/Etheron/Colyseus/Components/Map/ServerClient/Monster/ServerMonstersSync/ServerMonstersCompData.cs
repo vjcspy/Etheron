@@ -3,7 +3,6 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Monster.ServerMonstersSyn
 {
     public struct ServerMonstersCompData
     {
-        public int pollingIntervalMs;
         public MonsterDatabase monsterDatabase;
     }
 }

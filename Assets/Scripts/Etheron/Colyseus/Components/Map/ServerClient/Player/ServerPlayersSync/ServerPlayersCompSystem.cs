@@ -41,7 +41,7 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayersSync
                     break;
                 }
 
-                await UniTask.Delay(millisecondsDelay: _config.pollingIntervalMs); // Kiểm tra mỗi 100ms
+                await UniTask.Delay(millisecondsDelay: 1000); // Kiểm tra mỗi 100ms
             }
         }
 
