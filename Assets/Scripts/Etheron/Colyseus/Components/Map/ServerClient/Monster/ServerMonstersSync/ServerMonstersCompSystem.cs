@@ -1,7 +1,5 @@
 ﻿using Colyseus.Schema;
 using Cysharp.Threading.Tasks;
-using Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayersSync;
-using Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayerVisualizationComp;
 using Etheron.Colyseus.Schemas;
 using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
@@ -17,7 +15,6 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Monster.ServerMonstersSyn
         private ServerMonstersCompData _config;
         private bool _isRunning;
         private XCompStorage<ServerMonstersCompData> _serverMonsterStorage;
-        private XCompStorage<ServerPlayersCompData> _serverPlayersCompStorage;
         public ServerMonstersCompSystem(XMachineEntity xMachineEntity) : base(xMachineEntity: xMachineEntity)
         {
         }
@@ -25,10 +22,10 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Monster.ServerMonstersSyn
         {
             _colyseusManager = ColyseusManager.Instance;
             _serverMonsterStorage = GetStorage<ServerMonstersCompData>();
-            _serverPlayersCompStorage = GetStorage<ServerPlayersCompData>();
             _config = _serverMonsterStorage.Get();
 
-            if (!_serverPlayersCompStorage.IsEnable()) return;
+            if (!_serverMonsterStorage.IsEnable()) return;
+
             _isRunning = true;
             WaitForMapRoomConnected().Forget();
         }
@@ -51,46 +48,52 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Monster.ServerMonstersSyn
         }
         private void RegisterCallbacks(StateCallbackStrategy<MapV1State> callback)
         {
-            // callback.OnAdd(
-            //     propertyExpression: state => state.players,
-            //     handler: (sessionId, player) =>
-            //     {
-            //         ELogger.Log(message: $"[ServerPlayersCompSystem] Player added: {sessionId}");
-            //
-            //         if (_monsters.ContainsKey(key: sessionId)) return;
-            //         ELogger.Log(message: "[ServerPlayersCompSystem] Creating new player GameObject with sessionId " + sessionId);
-            //         GameObject playerGO = Object.Instantiate(original: _config.playerPrefab);
-            //         XEntity xEntity = playerGO.GetComponent<XEntity>();
-            //         if (xEntity != null)
-            //         {
-            //             xEntity.AddComponentData(component: new ServerPlayerVisualizationCompData
-            //             {
-            //                 sessionId = sessionId
-            //             });
-            //         }
-            //         else
-            //         {
-            //             ELogger.Log(message: "[ServerPlayersCompSystem] XEntity not found in player prefab");
-            //         }
-            //
-            //         playerGO.name = $"RemotePlayer_{sessionId}";
-            //         _players[key: sessionId] = playerGO;
-            //     }
-            // );
-            //
-            // callback.OnRemove(
-            //     propertyExpression: state => state.players,
-            //     handler: (sessionId, player) =>
-            //     {
-            //         ELogger.Log(message: $"[ServerPlayersCompSystem] Player removed: {sessionId}");
-            //
-            //         if (_players.TryGetValue(key: sessionId, value: out GameObject go))
-            //         {
-            //             Object.Destroy(obj: go);
-            //             _players.Remove(key: sessionId);
-            //         }
-            //     }
-            // );
+            callback.OnAdd(
+                propertyExpression: state => state.monsters,
+                handler: (sessionId, monster) =>
+                {
+                    ELogger.Log(message: $"[ServerMonstersCompSystem] Monster added: {sessionId}");
+
+                    if (_monsters.ContainsKey(key: sessionId)) return;
+                    ELogger.Log(message: "[ServerMonstersCompSystem] Creating new player GameObject with sessionId " + sessionId);
+                    GameObject monsterPrefab = _config.monsterDatabase.GetMonsterPrefab(id: monster.id);
+                    if (monsterPrefab == null)
+                    {
+                        ELogger.Log(message: "[ServerMonstersCompSystem] Monster prefab not found");
+                        return;
+                    }
+                    GameObject monsterGO = Object.Instantiate(original: monsterPrefab);
+                    XEntity xEntity = monsterGO.GetComponent<XEntity>();
+                    if (xEntity != null)
+                    {
+                        // xEntity.AddComponentData(component: new ServerPlayerVisualizationCompData
+                        // {
+                        //     sessionId = sessionId
+                        // });
+                    }
+                    else
+                    {
+                        ELogger.Log(message: "[ServerMonstersCompSystem] XEntity not found in player prefab");
+                    }
+
+                    monsterGO.name = $"ServerMonster_{sessionId}";
+                    _monsters[key: sessionId] = monsterGO;
+                }
+            );
+
+            callback.OnRemove(
+                propertyExpression: state => state.monsters,
+                handler: (sessionId, monster) =>
+                {
+                    ELogger.Log(message: $"[ServerMonstersCompSystem] Monster removed: {sessionId}");
+
+                    if (_monsters.TryGetValue(key: sessionId, value: out GameObject go))
+                    {
+                        Object.Destroy(obj: go);
+                        _monsters.Remove(key: sessionId);
+                    }
+                }
+            );
         }
         public override void OnDestroy()
         {

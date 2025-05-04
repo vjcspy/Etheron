@@ -3,6 +3,7 @@ using Colyseus.Schema;
 using Cysharp.Threading.Tasks;
 using Etheron.Colyseus.Schemas;
 using Etheron.Core.Manager;
+using Etheron.Utils;
 using System;
 using UnityEngine;
 namespace Etheron.Colyseus
@@ -41,15 +42,15 @@ namespace Etheron.Colyseus
                 await client.Auth
                     .SignInWithEmailAndPassword(email: email, password: password);
                 _isLoggedIn = true;
-                Debug.Log(message: "[Auth] Signed in successfully");
+                ELogger.Log(message: "[Auth] Signed in successfully");
             }
             catch (OperationCanceledException)
             {
-                Debug.LogWarning(message: "[Auth] SignIn was canceled.");
+                ELogger.LogWarning(message: "[Auth] SignIn was canceled.");
             }
             catch (Exception ex)
             {
-                Debug.LogError(message: $"[Auth] SignIn failed: {ex}");
+                ELogger.LogError(message: $"[Auth] SignIn failed: {ex}");
             }
             finally
             {
@@ -62,7 +63,7 @@ namespace Etheron.Colyseus
             _lastMapId = mapId;
             if (currentMapRoom != null)
             {
-                Debug.Log(message: "[ColyseusManager.EnterMap] Leaving current map before entering a new one");
+                ELogger.Log(message: "[ColyseusManager.EnterMap] Leaving current map before entering a new one");
                 await currentMapRoom.Leave();
                 CleanupCurrentMapRoom();
             }
@@ -70,22 +71,22 @@ namespace Etheron.Colyseus
             try
             {
                 ColyseusMatchMakeResponse reservation = await client.Http.Get<ColyseusMatchMakeResponse>(uriPath: "map-maker/enter?mapId=" + mapId);
-                Debug.Log(message: "[ColyseusManager.EnterMap] Got reservation");
+                ELogger.Log(message: "[ColyseusManager.EnterMap] Got reservation");
                 currentMapRoom = await client.ConsumeSeatReservation<MapV1State>(response: reservation);
                 currentMapRoomCallback = Callbacks.Get(room: currentMapRoom);
-                Debug.Log(message: "[ColyseusManager.EnterMap] joined map successfully");
+                ELogger.Log(message: "[ColyseusManager.EnterMap] joined map successfully");
                 RegisterRoomDisconnectEvents(room: currentMapRoom);
             }
             catch (Exception ex)
             {
-                Debug.Log(message: "join error");
-                Debug.Log(message: ex.Message);
+                ELogger.Log(message: "join error");
+                ELogger.Log(message: ex.Message);
             }
         }
 
         private void WhenLoading(bool isLoading)
         {
-            Debug.Log(message: $"Loading Colyseus: {isLoading}");
+            ELogger.Log(message: $"Loading Colyseus: {isLoading}");
         }
 
         private void RegisterRoomDisconnectEvents(ColyseusRoom<MapV1State> room)
@@ -95,7 +96,7 @@ namespace Etheron.Colyseus
         }
         private void HandleRoomError(int code, string message)
         {
-            Debug.LogWarning(message: $"[ColyseusManager] Room error (code={code}): {message}");
+            ELogger.LogWarning(message: $"[ColyseusManager] Room error (code={code}): {message}");
             // CleanupCurrentMapRoom();
             // _needsReconnect = true;
             // TryReconnectAsync().Forget();
@@ -103,7 +104,7 @@ namespace Etheron.Colyseus
 
         private void HandleRoomLeave(int code)
         {
-            Debug.LogWarning(message: $"[ColyseusManager] Room left (code={code}). Resetting state.");
+            ELogger.LogWarning(message: $"[ColyseusManager] Room left (code={code}). Resetting state.");
             CleanupCurrentMapRoom();
         }
 
@@ -120,24 +121,24 @@ namespace Etheron.Colyseus
             {
                 await UniTask.Delay(millisecondsDelay: 3000); // chờ 3 giây
 
-                Debug.Log(message: $"[Reconnect] Attempt #{retryCount + 1}");
+                ELogger.Log(message: $"[Reconnect] Attempt #{retryCount + 1}");
                 try
                 {
                     await EnterMapV1(mapId: _lastMapId); // bạn cần lưu lại mapId gần nhất
                     _needsReconnect = false;
-                    Debug.Log(message: "[Reconnect] Success");
+                    ELogger.Log(message: "[Reconnect] Success");
                     break;
                 }
                 catch
                 {
                     retryCount++;
-                    Debug.LogWarning(message: "[Reconnect] Failed, will retry...");
+                    ELogger.LogWarning(message: "[Reconnect] Failed, will retry...");
                 }
             }
 
             if (_needsReconnect)
             {
-                Debug.LogError(message: "[Reconnect] All retries failed.");
+                ELogger.LogError(message: "[Reconnect] All retries failed.");
                 // TODO: Show UI cho người dùng chọn reconnect thủ công
             }
         }

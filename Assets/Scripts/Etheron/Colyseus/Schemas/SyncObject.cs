@@ -20,12 +20,9 @@ public SyncObject() { }
 		public string id = default(string);
 
 		[Type(1, "string")]
-		public string clientId = default(string);
+		public string clientSyncId = default(string);
 
 		[Type(2, "string")]
-		public string serverId = default(string);
-
-		[Type(3, "ref", typeof(Position))]
-		public Position position = null;
+		public string serverSyncId = default(string);
 	}
 }

@@ -19,7 +19,10 @@ public Position() { }
 		[Type(0, "ref", typeof(Vector3))]
 		public Vector3 value = null;
 
-		[Type(1, "number")]
+		[Type(1, "ref", typeof(Vector3))]
+		public Vector3 facingDirection = null;
+
+		[Type(2, "number")]
 		public float timestamp = default(float);
 	}
 }

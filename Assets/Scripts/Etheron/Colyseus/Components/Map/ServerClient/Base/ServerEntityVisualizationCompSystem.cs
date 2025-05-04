@@ -1,53 +1,49 @@
 ﻿using Cysharp.Threading.Tasks;
+using Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayerVisualization;
 using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
 using System.Collections.Generic;
 using UnityEngine;
-namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayerVisualizationComp
+namespace Etheron.Colyseus.Components.Map.ServerClient.Base
 {
-    public class ServerPlayerVisualizationCompSystem : XCompSystem
+    public abstract class ServerEntityVisualizationCompSystem<TState> : XCompSystem
     {
-        private const int capacity = 5; // the higher this value, the more/greater the delay
+        private const int capacity = 5;
         private static readonly int AnimatorStateHash = Animator.StringToHash(name: "State");
 
-        // ===== INTERPOLATION BUFFER =====
         private readonly Queue<InterpolationTarget> _interpolationBuffer = new Queue<InterpolationTarget>(capacity: capacity);
 
         private Animator _animator;
-        private ColyseusManager _colyseusManager;
 
-        // ===== INTERPOLATION STATE =====
+        private TState _cachedEntityState;
+        protected ColyseusManager _colyseusManager;
+
         private Vector3 _currentLerpStart;
         private InterpolationTarget _currentTarget;
         private float _endTimestamp;
         private bool _isLerping;
 
-        // ===== SYNC CONTROL =====
         private bool _isRunning;
         private float _lerpTimer;
         private int _previousAnimationState = -1;
 
-        // ===== LAST APPLIED STATE =====
         private Quaternion _previousRotation;
         private float _startTimestamp;
 
-        // ===== COMPONENT STORAGE =====
-        private XCompStorage<ServerPlayerVisualizationCompData> _storage;
         private Transform _transform;
 
-        public ServerPlayerVisualizationCompSystem(XMachineEntity xMachineEntity) : base(xMachineEntity: xMachineEntity) { }
+        public ServerEntityVisualizationCompSystem(XMachineEntity xMachineEntity) : base(xMachineEntity: xMachineEntity) { }
 
         public override void OnCreate()
         {
             _colyseusManager = ColyseusManager.Instance;
-            _storage = GetStorage<ServerPlayerVisualizationCompData>();
             _transform = GetComponent<Transform>();
             _animator = _xMachineEntity.GetComponentInChildren<Animator>();
             _isRunning = true;
 
             _previousRotation = _transform.rotation;
 
-            int interval = _storage.Get().updateIntervalMs;
+            int interval = GetStorage<ServerPlayerVisualizationCompData>().Get().updateIntervalMs;
             SyncLoop(interval: interval).Forget();
         }
 
@@ -55,35 +51,14 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayerVisual
         {
             while (_isRunning)
             {
-                if (!_storage.IsEnable() || _colyseusManager.currentMapRoom?.State?.players == null)
+                if (!TryGetEntityState(entityState: out _cachedEntityState))
                 {
-                    await UniTask.Delay(millisecondsDelay: interval);
+                    await UniTask.Delay(millisecondsDelay: 1000);
                     continue;
                 }
 
-                ServerPlayerVisualizationCompData data = _storage.Get();
-                if (string.IsNullOrEmpty(value: data.sessionId))
+                if (TryExtractInterpolationTarget(state: _cachedEntityState, target: out InterpolationTarget newTarget))
                 {
-                    await UniTask.Delay(millisecondsDelay: interval);
-                    continue;
-                }
-
-                if (_colyseusManager.currentMapRoom.State.players.TryGetValue(key: data.sessionId, value: out Schemas.Player playerState))
-                {
-                    InterpolationTarget newTarget = new InterpolationTarget
-                    {
-                        position = new Vector3(
-                            x: playerState.position.value.x,
-                            y: playerState.position.value.y,
-                            z: playerState.position.value.z),
-                        timestamp = playerState.position.timestamp,
-                        facingDirection = new Vector3(
-                            x: playerState.facingDirection.x,
-                            y: playerState.facingDirection.y,
-                            z: playerState.facingDirection.z),
-                        animationState = playerState.visualization.state
-                    };
-
                     if (_startTimestamp == 0f)
                     {
                         _transform.position = newTarget.position;
@@ -97,9 +72,8 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayerVisual
                     else if (newTarget.timestamp > _endTimestamp)
                     {
                         if (_interpolationBuffer.Count >= capacity)
-                        {
-                            _interpolationBuffer.Dequeue(); // Loại bỏ phần tử cũ nhất nếu đầy
-                        }
+                            _interpolationBuffer.Dequeue();
+
                         _interpolationBuffer.Enqueue(item: newTarget);
                     }
                 }
@@ -112,8 +86,7 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayerVisual
         {
             if (!_isLerping && _interpolationBuffer.Count > 0)
             {
-                InterpolationTarget nextTarget = _interpolationBuffer.Dequeue();
-                BeginLerpTo(target: nextTarget);
+                BeginLerpTo(target: _interpolationBuffer.Dequeue());
             }
 
             if (_isLerping)
@@ -147,7 +120,6 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayerVisual
 
         private void ApplyCurrentTargetState()
         {
-            // Cập nhật rotation
             Quaternion targetRotation = Quaternion.LookRotation(forward: _currentTarget.facingDirection.normalized, upwards: Vector3.up);
             if (_previousRotation != targetRotation)
             {
@@ -155,7 +127,6 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayerVisual
                 _previousRotation = targetRotation;
             }
 
-            // Cập nhật animator
             if (_previousAnimationState != _currentTarget.animationState)
             {
                 _animator.SetInteger(id: AnimatorStateHash, value: _currentTarget.animationState);
@@ -168,8 +139,10 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayerVisual
             _isRunning = false;
         }
 
-        // ===== INTERPOLATION TARGET PACKAGE =====
-        private struct InterpolationTarget
+        protected abstract bool TryGetEntityState(out TState entityState);
+        protected abstract bool TryExtractInterpolationTarget(TState state, out InterpolationTarget target);
+
+        protected struct InterpolationTarget
         {
             public Vector3 position;
             public float timestamp;
@@ -177,4 +150,5 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayerVisual
             public int animationState;
         }
     }
+
 }

@@ -16,10 +16,10 @@ namespace Etheron.Colyseus.Schemas {
 [Preserve]
 #endif
 public EntityGameObject() { }
+		[Type(3, "ref", typeof(Position))]
+		public Position position = null;
+
 		[Type(4, "ref", typeof(EntityVisualization))]
 		public EntityVisualization visualization = null;
-
-		[Type(5, "ref", typeof(Vector3))]
-		public Vector3 facingDirection = null;
 	}
 }

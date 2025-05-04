@@ -1,4 +1,4 @@
-﻿namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayerVisualizationComp
+﻿namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayerVisualization
 {
     public struct ServerPlayerVisualizationCompData
     {

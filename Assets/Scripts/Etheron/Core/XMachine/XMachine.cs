@@ -155,6 +155,11 @@ namespace Etheron.Core.XMachine
         {
             xMachine?.Start(initialStateId: null);
         }
-        protected abstract XMachineState[] GetXMachineStates();
+        protected virtual XMachineState[] GetXMachineStates()
+        {
+            return new XMachineState[]
+            {
+            };
+        }
     }
 }

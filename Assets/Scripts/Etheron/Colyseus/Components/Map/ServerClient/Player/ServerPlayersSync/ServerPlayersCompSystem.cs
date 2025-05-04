@@ -1,6 +1,6 @@
 ﻿using Colyseus.Schema;
 using Cysharp.Threading.Tasks;
-using Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayerVisualizationComp;
+using Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayerVisualization;
 using Etheron.Colyseus.Schemas;
 using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
@@ -75,7 +75,7 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayersSync
                         ELogger.Log(message: "[ServerPlayersCompSystem] XEntity not found in player prefab");
                     }
 
-                    playerGO.name = $"RemotePlayer_{sessionId}";
+                    playerGO.name = $"ServerPlayer_{sessionId}";
                     _players[key: sessionId] = playerGO;
                 }
             );

@@ -5,12 +5,14 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Monster.ServerMonstersSyn
 {
     public class ServerMonstersCompAuthoring : XCompAuthoring
     {
+        [SerializeField] private int pollingIntervalMs = 100;
         [SerializeField] private MonsterDatabase monsterDatabase;
         protected override void Authoring()
         {
             AddComponentData(component: new ServerMonstersCompData
             {
-                monsterDatabase = monsterDatabase
+                monsterDatabase = monsterDatabase,
+                pollingIntervalMs = pollingIntervalMs
             });
             AddSystem(system: new ServerMonstersCompSystem(xMachineEntity: xMachineEntity));
         }
