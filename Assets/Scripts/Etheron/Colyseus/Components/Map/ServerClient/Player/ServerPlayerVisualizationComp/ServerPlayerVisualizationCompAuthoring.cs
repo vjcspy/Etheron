@@ -1,5 +1,4 @@
-﻿using Etheron.Colyseus.Components.Map.ServerClient.Player.VisualizationComp;
-using Etheron.Core.XComponent;
+﻿using Etheron.Core.XComponent;
 using UnityEngine;
 namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayerVisualizationComp
 {

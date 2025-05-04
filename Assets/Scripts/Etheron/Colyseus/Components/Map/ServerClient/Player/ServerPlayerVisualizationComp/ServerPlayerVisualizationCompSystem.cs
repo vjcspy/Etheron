@@ -3,14 +3,15 @@ using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
 using System.Collections.Generic;
 using UnityEngine;
-namespace Etheron.Colyseus.Components.Map.ServerClient.Player.VisualizationComp
+namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayerVisualizationComp
 {
     public class ServerPlayerVisualizationCompSystem : XCompSystem
     {
+        private const int capacity = 5; // the higher this value, the more/greater the delay
         private static readonly int AnimatorStateHash = Animator.StringToHash(name: "State");
 
         // ===== INTERPOLATION BUFFER =====
-        private readonly Queue<InterpolationTarget> _interpolationBuffer = new Queue<InterpolationTarget>(capacity: 10);
+        private readonly Queue<InterpolationTarget> _interpolationBuffer = new Queue<InterpolationTarget>(capacity: capacity);
 
         private Animator _animator;
         private ColyseusManager _colyseusManager;
@@ -95,7 +96,7 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Player.VisualizationComp
                     }
                     else if (newTarget.timestamp > _endTimestamp)
                     {
-                        if (_interpolationBuffer.Count >= 10)
+                        if (_interpolationBuffer.Count >= capacity)
                         {
                             _interpolationBuffer.Dequeue(); // Loại bỏ phần tử cũ nhất nếu đầy
                         }

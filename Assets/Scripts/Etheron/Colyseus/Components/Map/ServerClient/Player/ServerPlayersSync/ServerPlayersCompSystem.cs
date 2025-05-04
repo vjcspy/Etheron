@@ -1,13 +1,13 @@
 ﻿using Colyseus.Schema;
 using Cysharp.Threading.Tasks;
-using Etheron.Colyseus.Components.Map.ServerClient.Player.VisualizationComp;
+using Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayerVisualizationComp;
 using Etheron.Colyseus.Schemas;
 using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
 using Etheron.Utils;
 using System.Collections.Generic;
 using UnityEngine;
-namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerSync
+namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayersSync
 {
     internal class ServerPlayersCompSystem : XCompSystem
     {
@@ -51,11 +51,11 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerSync
                 propertyExpression: state => state.players,
                 handler: (sessionId, player) =>
                 {
-                    if (sessionId == _colyseusManager.currentMapRoom.SessionId)
-                    {
-                        ELogger.Log(message: "[ServerPlayersCompSystem] Skip adding self player");
-                        return;
-                    }
+                    // if (sessionId == _colyseusManager.currentMapRoom.SessionId)
+                    // {
+                    //     ELogger.Log(message: "[ServerPlayersCompSystem] Skip adding self player");
+                    //     return;
+                    // }
 
                     ELogger.Log(message: $"[ServerPlayersCompSystem] Player added: {sessionId}");
 

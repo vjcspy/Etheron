@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerSync
+namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayersSync
 {
     public struct ServerPlayersCompData
     {

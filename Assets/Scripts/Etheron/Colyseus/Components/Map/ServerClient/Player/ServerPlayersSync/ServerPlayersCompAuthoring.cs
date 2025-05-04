@@ -1,6 +1,6 @@
 ﻿using Etheron.Core.XComponent;
 using UnityEngine;
-namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerSync
+namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayersSync
 {
     [RequireComponent(requiredComponent: typeof(ColyseusRoomEntity))]
     internal class ServerPlayersAuthoring : XCompAuthoring
