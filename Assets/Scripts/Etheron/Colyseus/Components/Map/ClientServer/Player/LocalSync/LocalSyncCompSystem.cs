@@ -2,6 +2,9 @@
 using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
 using Etheron.Gameplay.Character.Player.Common.Components.VisualizationComp;
+using Etheron.Utils.Thread;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 
@@ -9,6 +12,8 @@ namespace Etheron.Colyseus.Components.Map.ClientServer.Player.LocalSync
 {
     public class LocalSyncCompSystem : XCompSystem
     {
+        private readonly ThreadSafeStructValue<LocalSyncData> _localSyncData = new ThreadSafeStructValue<LocalSyncData>();
+
         private ColyseusManager _colyseusManager;
         private bool _isRunning;
         private XCompStorage<LocalSyncCompData> _localSyncCompStorage;
@@ -28,19 +33,20 @@ namespace Etheron.Colyseus.Components.Map.ClientServer.Player.LocalSync
             _rb = GetComponent<Rigidbody>();
 
             _isRunning = true;
-            SyncLoopAsync(millisecondsDelay: _localSyncCompStorage.Get().syncIntervalMs).Forget();
+
+            LocalSyncCompData config = _localSyncCompStorage.Get();
+            MainThreadSyncLoop(mainThreadSyncIntervalMs: config.mainThreadSyncIntervalMs).Forget();
+            RunSyncLoopInBackground(syncIntervalMs: config.serverSyncIntervalMs);
         }
 
-        public override void Update()
-        {
-        }
+        public override void Update() { }
 
         public override void OnDestroy()
         {
             _isRunning = false;
         }
 
-        private async UniTaskVoid SyncLoopAsync(int millisecondsDelay)
+        private async UniTaskVoid MainThreadSyncLoop(int mainThreadSyncIntervalMs)
         {
             while (_isRunning)
             {
@@ -49,30 +55,66 @@ namespace Etheron.Colyseus.Components.Map.ClientServer.Player.LocalSync
                     VisualizationCompData visualizationComp = _visualizationCompStorage.Get();
                     Vector3 position = _rb.transform.position;
 
-                    if (_colyseusManager.currentMapRoom != null)
+                    _localSyncData.Set(newValue: new LocalSyncData
                     {
-                        await _colyseusManager.currentMapRoom.Send(type: "local_sync", message: new
-                        {
-                            position = new
-                            {
-                                position.x,
-                                position.y,
-                                position.z,
-                                timestamp = Time.time
-                            },
-                            facingDirection = new
-                            {
-                                visualizationComp.facingDirection.x,
-                                visualizationComp.facingDirection.y,
-                                visualizationComp.facingDirection.z
-                            },
-                            visualizationComp.animationState
-                        });
-                    }
+                        position = position,
+                        timestamp = Time.time,
+                        facingDirection = visualizationComp.facingDirection,
+                        animationState = visualizationComp.animationState
+                    });
                 }
 
-                await UniTask.Delay(millisecondsDelay: millisecondsDelay); // mỗi 100ms
+                await UniTask.Delay(millisecondsDelay: mainThreadSyncIntervalMs);
             }
         }
+
+        private void RunSyncLoopInBackground(int syncIntervalMs)
+        {
+            Task.Factory.StartNew(
+                action: () => SyncLoop(millisecondsDelay: syncIntervalMs).Forget(),
+                cancellationToken: CancellationToken.None,
+                creationOptions: TaskCreationOptions.LongRunning,
+                scheduler: TaskScheduler.Default
+            );
+        }
+
+        private async UniTask SyncLoop(int millisecondsDelay)
+        {
+            while (_isRunning)
+            {
+                if (_localSyncCompStorage.IsEnable() && _colyseusManager.currentMapRoom != null)
+                {
+                    LocalSyncData localSyncData = _localSyncData.Get();
+
+                    await _colyseusManager.currentMapRoom.Send(type: "local_sync", message: new
+                    {
+                        position = new
+                        {
+                            localSyncData.position.x,
+                            localSyncData.position.y,
+                            localSyncData.position.z,
+                            localSyncData.timestamp
+                        },
+                        facingDirection = new
+                        {
+                            localSyncData.facingDirection.x,
+                            localSyncData.facingDirection.y,
+                            localSyncData.facingDirection.z
+                        },
+                        localSyncData.animationState
+                    });
+                }
+
+                await UniTask.Delay(millisecondsDelay: millisecondsDelay);
+            }
+        }
+    }
+
+    public struct LocalSyncData
+    {
+        public Vector3 position;
+        public float timestamp;
+        public Vector3 facingDirection;
+        public int animationState;
     }
 }
