@@ -2,7 +2,6 @@
 {
     public struct LocalSyncCompData
     {
-        public int mainThreadSyncIntervalMs;
         public int serverSyncIntervalMs;
     }
 }

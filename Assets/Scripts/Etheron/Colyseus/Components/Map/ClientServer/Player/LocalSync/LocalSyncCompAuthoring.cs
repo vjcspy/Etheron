@@ -9,13 +9,11 @@ namespace Etheron.Colyseus.Components.Map.ClientServer.Player.LocalSync
     [RequireComponent(requiredComponent: typeof(PlayerEntity))]
     public class LocalSyncCompAuthoring : XCompAuthoring
     {
-        [SerializeField] private int mainThreadSyncIntervalMs = 50;
         [SerializeField] private int serverSyncIntervalMs = 25;
         protected override void Authoring()
         {
             AddComponentData(component: new LocalSyncCompData
             {
-                mainThreadSyncIntervalMs = mainThreadSyncIntervalMs,
                 serverSyncIntervalMs = serverSyncIntervalMs
             });
             AddSystem(system: new LocalSyncCompSystem(xMachineEntity: xMachineEntity));
