@@ -35,38 +35,30 @@ namespace Etheron.Colyseus.Components.Map.ClientServer.Player.LocalSync
             _isRunning = true;
 
             LocalSyncCompData config = _localSyncCompStorage.Get();
-            MainThreadSyncLoop(mainThreadSyncIntervalMs: config.mainThreadSyncIntervalMs).Forget();
             RunSyncLoopInBackground(syncIntervalMs: config.serverSyncIntervalMs);
         }
 
-        public override void Update() { }
+        public override void Update()
+        {
+            if (!_localSyncCompStorage.IsEnable()) return;
+
+            VisualizationCompData visualizationComp = _visualizationCompStorage.Get();
+            Vector3 position = _rb.transform.position;
+
+            _localSyncData.Set(newValue: new LocalSyncData
+            {
+                position = position,
+                timestamp = Time.time,
+                facingDirection = visualizationComp.facingDirection,
+                animationState = visualizationComp.animationState
+            });
+        }
 
         public override void OnDestroy()
         {
             _isRunning = false;
         }
 
-        private async UniTaskVoid MainThreadSyncLoop(int mainThreadSyncIntervalMs)
-        {
-            while (_isRunning)
-            {
-                if (_localSyncCompStorage.IsEnable())
-                {
-                    VisualizationCompData visualizationComp = _visualizationCompStorage.Get();
-                    Vector3 position = _rb.transform.position;
-
-                    _localSyncData.Set(newValue: new LocalSyncData
-                    {
-                        position = position,
-                        timestamp = Time.time,
-                        facingDirection = visualizationComp.facingDirection,
-                        animationState = visualizationComp.animationState
-                    });
-                }
-
-                await UniTask.Delay(millisecondsDelay: mainThreadSyncIntervalMs);
-            }
-        }
 
         private void RunSyncLoopInBackground(int syncIntervalMs)
         {

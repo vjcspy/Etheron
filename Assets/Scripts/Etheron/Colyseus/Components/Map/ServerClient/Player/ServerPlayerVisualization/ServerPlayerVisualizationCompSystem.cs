@@ -4,7 +4,7 @@ using Etheron.Core.XMachine;
 using UnityEngine;
 namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayerVisualization
 {
-    public class ServerPlayerVisualizationCompSystem : ServerEntityVisualizationCompSystem<Schemas.Player>
+    public class ServerPlayerVisualizationCompSystem : ServerEntityFastVisualizationSystem<Schemas.Player>
     {
         private readonly XCompStorage<ServerPlayerVisualizationCompData> _storage;
         public ServerPlayerVisualizationCompSystem(XMachineEntity xMachineEntity) : base(xMachineEntity: xMachineEntity)

@@ -5,7 +5,7 @@ using Etheron.Core.XMachine;
 using UnityEngine;
 namespace Etheron.Colyseus.Components.Map.ServerClient.Monster.ServerMonsterVisualization
 {
-    public class ServerMonsterVisualizationCompSystem : ServerEntityVisualizationCompSystem<Schemas.Monster>
+    public class ServerMonsterVisualizationCompSystem : ServerEntityFastVisualizationSystem<Schemas.Monster>
     {
         private readonly XCompStorage<ServerMonsterVisualizationCompData> _storage;
         public ServerMonsterVisualizationCompSystem(XMachineEntity xMachineEntity) : base(xMachineEntity: xMachineEntity)
