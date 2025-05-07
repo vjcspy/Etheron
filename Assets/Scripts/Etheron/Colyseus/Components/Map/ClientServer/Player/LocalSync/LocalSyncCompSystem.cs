@@ -3,8 +3,6 @@ using Etheron.Core.XComponent;
 using Etheron.Core.XMachine;
 using Etheron.Gameplay.Character.Player.Common.Components.VisualizationComp;
 using Etheron.Utils.Thread;
-using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 
@@ -16,6 +14,7 @@ namespace Etheron.Colyseus.Components.Map.ClientServer.Player.LocalSync
 
         private ColyseusManager _colyseusManager;
         private bool _isRunning;
+        private LocalSyncData _lastSyncedData;
         private XCompStorage<LocalSyncCompData> _localSyncCompStorage;
 
         private Rigidbody _rb;
@@ -59,15 +58,13 @@ namespace Etheron.Colyseus.Components.Map.ClientServer.Player.LocalSync
             _isRunning = false;
         }
 
-
         private void RunSyncLoopInBackground(int syncIntervalMs)
         {
-            Task.Factory.StartNew(
-                action: () => SyncLoop(millisecondsDelay: syncIntervalMs).Forget(),
-                cancellationToken: CancellationToken.None,
-                creationOptions: TaskCreationOptions.LongRunning,
-                scheduler: TaskScheduler.Default
-            );
+            // UniTask.RunOnThreadPool là cách đúng để chạy task background trên desktop/mobile
+            UniTask.RunOnThreadPool(action: async () =>
+            {
+                await SyncLoop(millisecondsDelay: syncIntervalMs);
+            });
         }
 
         private async UniTask SyncLoop(int millisecondsDelay)
@@ -76,29 +73,42 @@ namespace Etheron.Colyseus.Components.Map.ClientServer.Player.LocalSync
             {
                 if (_localSyncCompStorage.IsEnable() && _colyseusManager.currentMapRoom != null)
                 {
-                    LocalSyncData localSyncData = _localSyncData.Get();
+                    LocalSyncData currentData = _localSyncData.Get();
 
-                    await _colyseusManager.currentMapRoom.Send(type: "local_sync", message: new
+                    // Kiểm tra thay đổi để tránh gửi dữ liệu không cần thiết
+                    if (HasChanged(current: currentData))
                     {
-                        position = new
+                        await _colyseusManager.currentMapRoom.Send(type: "local_sync", message: new
                         {
-                            localSyncData.position.x,
-                            localSyncData.position.y,
-                            localSyncData.position.z,
-                            localSyncData.timestamp
-                        },
-                        facingDirection = new
-                        {
-                            localSyncData.facingDirection.x,
-                            localSyncData.facingDirection.y,
-                            localSyncData.facingDirection.z
-                        },
-                        localSyncData.animationState
-                    });
+                            position = new
+                            {
+                                currentData.position.x,
+                                currentData.position.y,
+                                currentData.position.z,
+                                currentData.timestamp
+                            },
+                            facingDirection = new
+                            {
+                                currentData.facingDirection.x,
+                                currentData.facingDirection.y,
+                                currentData.facingDirection.z
+                            },
+                            currentData.animationState
+                        });
+
+                        _lastSyncedData = currentData;
+                    }
                 }
 
                 await UniTask.Delay(millisecondsDelay: millisecondsDelay);
             }
+        }
+
+        private bool HasChanged(LocalSyncData current)
+        {
+            return current.position != _lastSyncedData.position ||
+                current.facingDirection != _lastSyncedData.facingDirection ||
+                current.animationState != _lastSyncedData.animationState;
         }
     }
 
