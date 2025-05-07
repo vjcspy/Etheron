@@ -6,11 +6,13 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayersSync
     internal class ServerPlayersAuthoring : XCompAuthoring
     {
         [SerializeField] private GameObject playerPrefab;
+        [SerializeField] private bool debugLocalPlayer = true;
         protected override void Authoring()
         {
             AddComponentData(component: new ServerPlayersCompData
             {
-                playerPrefab = playerPrefab
+                playerPrefab = playerPrefab,
+                debugLocalPlayer = debugLocalPlayer
             });
             AddSystem(system: new ServerPlayersCompSystem(xMachineEntity: xMachineEntity));
         }

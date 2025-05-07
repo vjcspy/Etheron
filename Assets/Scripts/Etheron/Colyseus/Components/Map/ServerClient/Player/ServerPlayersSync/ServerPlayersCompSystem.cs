@@ -51,11 +51,11 @@ namespace Etheron.Colyseus.Components.Map.ServerClient.Player.ServerPlayersSync
                 propertyExpression: state => state.players,
                 handler: (sessionId, player) =>
                 {
-                    // if (sessionId == _colyseusManager.currentMapRoom.SessionId)
-                    // {
-                    //     ELogger.Log(message: "[ServerPlayersCompSystem] Skip adding self player");
-                    //     return;
-                    // }
+                    if (!_config.debugLocalPlayer && sessionId == _colyseusManager.currentMapRoom.SessionId)
+                    {
+                        ELogger.Log(message: "[ServerPlayersCompSystem] Skip adding self player");
+                        return;
+                    }
 
                     ELogger.Log(message: $"[ServerPlayersCompSystem] Player added: {sessionId}");
 
